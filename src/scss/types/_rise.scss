@@ -5,31 +5,23 @@
 // confident motion. The stagger comes from the component revealing and hiding
 // one letter after the other (the `delay` attribute).
 
+@use "../mixins";
+
 @mixin styles() {
     --ah-rise-distance: 0.7em;
 
-    .letter {
-        display: inline-block;
-        opacity: 0;
-        white-space: pre;
+    @include mixins.stagger-letter;
 
+    .letter {
         &:not([hidden]) {
             animation: ah-rise-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
     }
 
     // The leaving phrase stays painted so its letters can lift out.
-    b[hidden].is-leaving {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        white-space: nowrap;
-        pointer-events: none;
-    }
+    @include mixins.leaving-phrase;
 
     b[hidden].is-leaving .letter[hidden] {
-        display: inline-block;
         animation: ah-rise-out 0.42s cubic-bezier(0.55, 0, 0.8, 0.4) both;
     }
 

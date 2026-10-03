@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Highlight annotations: a hand-drawn marker (underline, circle, scribble,

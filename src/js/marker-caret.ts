@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * A highlighter that collapses and reopens between phrases: the marker (and

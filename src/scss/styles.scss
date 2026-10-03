@@ -10,18 +10,20 @@
 @use "counter";
 @use "types";
 
-via-animated-words-headline,
-via-animated-letters-headline,
-via-animated-loading-headline,
-via-animated-clip-headline,
-via-animated-clip-caret-headline,
-via-animated-marker-caret-headline,
-via-animated-sparkle-headline,
-via-animated-highlight-headline,
-via-animated-type-headline,
-via-animated-type-delete-headline,
-via-animated-mirror-headline,
-via-animated-stagger-headline {
+:is(
+    via-animated-words-headline,
+    via-animated-letters-headline,
+    via-animated-loading-headline,
+    via-animated-clip-headline,
+    via-animated-clip-caret-headline,
+    via-animated-marker-caret-headline,
+    via-animated-sparkle-headline,
+    via-animated-highlight-headline,
+    via-animated-type-headline,
+    via-animated-type-delete-headline,
+    via-animated-mirror-headline,
+    via-animated-stagger-headline
+) {
     @include core.styles;
 
     &[animation="rotate-1"] {
@@ -93,8 +95,7 @@ via-animated-stagger-headline {
     }
 }
 
-via-animated-type-headline,
-via-animated-type-delete-headline {
+:is(via-animated-type-headline, via-animated-type-delete-headline) {
     @include types.type-styles;
 }
 
@@ -106,14 +107,11 @@ via-animated-loading-headline {
     @include types.loading-bar-styles;
 }
 
-via-animated-clip-headline,
-via-animated-clip-caret-headline,
-via-animated-marker-caret-headline {
+:is(via-animated-clip-headline, via-animated-clip-caret-headline, via-animated-marker-caret-headline) {
     @include types.clip-styles;
 }
 
-via-animated-clip-caret-headline,
-via-animated-marker-caret-headline {
+:is(via-animated-clip-caret-headline, via-animated-marker-caret-headline) {
     @include types.clip-caret-styles;
 }
 
@@ -137,9 +135,7 @@ via-animated-flipboard-headline {
     @include types.flipboard-styles;
 }
 
-via-animated-clock,
-via-animated-countdown,
-via-animated-timecode {
+:is(via-animated-clock, via-animated-countdown, via-animated-timecode) {
     @include counter.styles;
 }
 

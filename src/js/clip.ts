@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * @author Geoff Selby
@@ -7,13 +7,14 @@
  */
 
 import AnimatedWordsElement from "./words";
+import {numberAttribute} from "./utilities";
 
 export default class ClipAnimatedWordsElement extends AnimatedWordsElement {
     revealDelay= 600;
 
     connectedCallback() {
         super.connectedCallback();
-        this.revealDelay = this.hasAttribute('delay') ? parseInt(<string>this.getAttribute('delay')) : this.revealDelay;
+        this.revealDelay = numberAttribute(this, 'delay', this.revealDelay);
     }
 
     protected resize() {

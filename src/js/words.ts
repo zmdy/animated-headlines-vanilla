@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * @author Geoff Selby
@@ -6,38 +6,23 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-import {emit} from "./utilities";
-
-/** @see https://javascript.info/js-animation */
-function animate(timing: (timeFraction: number) => any, draw: (timePassed: number) => any, duration: number) {
-    let start = performance.now();
-
-    requestAnimationFrame(function animate(time) {
-        // timeFraction goes from 0 to 1
-        let timeFraction = (time - start) / duration;
-        if (timeFraction > 1) timeFraction = 1;
-
-        // calculate the current animation state
-        let progress = timing(timeFraction);
-
-        draw(progress);
-
-        if (timeFraction < 1) {
-            requestAnimationFrame(animate);
-        }
-    });
-}
+import {emit, numberAttribute} from "./utilities";
 
 export default class AnimatedWordsElement extends HTMLElement {
     #isStopped = false;
+    /** Bumped on every stop, so timers queued before it know they are stale. */
+    #generation = 0;
     holdDelay: number = 2500;
 
     protected readonly wordSelector = 'b';
     protected readonly leavingClassName = 'is-leaving';
 
     connectedCallback() {
-        this.holdDelay = this.hasAttribute('hold') ? parseInt(<string>this.getAttribute('hold')) : this.holdDelay;
+        this.holdDelay = numberAttribute(this, 'hold', this.holdDelay);
         this.resize();
+
+        // The widths above are only right once the web font has arrived.
+        document.fonts?.ready.then(() => this.isConnected && this.resize());
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (! prefersReducedMotion) {
@@ -47,35 +32,39 @@ export default class AnimatedWordsElement extends HTMLElement {
         emit(this, 'ready');
     }
 
+    disconnectedCallback() {
+        // Nobody is watching any more: do not keep cycling in the background.
+        this.halt();
+    }
+
     attributeChangedCallback() {
         this.resize();
     }
 
     protected resize() {
-        let width = 0;
+        const words = Array.from(this.querySelectorAll(this.wordSelector)) as HTMLElement[];
+
         // Assign to the wrapper element the width of its longest word, so the
         // surrounding copy does not jump every time the phrase changes.
         // A hidden word is `display: none` and would measure 0, so each one is
         // laid out (invisibly, out of flow) just long enough to be measured.
-        this.querySelectorAll(this.wordSelector).forEach(function (e) {
-            const word = e as HTMLElement;
-            const isHidden = word.hasAttribute('hidden');
+        // Writes and reads are kept apart, so the layout is computed once
+        // instead of once per word.
+        const measured = words.filter(word => word.hasAttribute('hidden'));
+        measured.forEach(word => {
+            word.style.display = 'inline-block';
+            word.style.position = 'absolute';
+            word.style.visibility = 'hidden';
+            word.style.whiteSpace = 'nowrap';
+        });
 
-            if (isHidden) {
-                word.style.display = 'inline-block';
-                word.style.position = 'absolute';
-                word.style.visibility = 'hidden';
-                word.style.whiteSpace = 'nowrap';
-            }
+        const width = Math.max(0, ...words.map(word => word.offsetWidth));
 
-            width = Math.max(word.offsetWidth, width);
-
-            if (isHidden) {
-                word.style.removeProperty('display');
-                word.style.removeProperty('position');
-                word.style.removeProperty('visibility');
-                word.style.removeProperty('white-space');
-            }
+        measured.forEach(word => {
+            word.style.removeProperty('display');
+            word.style.removeProperty('position');
+            word.style.removeProperty('visibility');
+            word.style.removeProperty('white-space');
         });
 
         this.style.width = width + 'px';
@@ -92,8 +81,13 @@ export default class AnimatedWordsElement extends HTMLElement {
 
     /** @api */
     public stop() {
-        this.#isStopped = true;
+        this.halt();
         emit(this, 'stopped');
+    }
+
+    private halt() {
+        this.#isStopped = true;
+        this.#generation++;
     }
 
     /** @api */
@@ -152,17 +146,17 @@ export default class AnimatedWordsElement extends HTMLElement {
         element.setAttribute('hidden', '');
     }
 
+    /**
+     * Runs `callable` once `duration` milliseconds have passed - unless the
+     * element was stopped (or removed) in the meantime.
+     */
     protected runAfter(duration: number, callable: () => any) {
-        animate((timeFraction: number) => { return timeFraction }, (timePassed: number) => {
-            if (this.#isStopped) {
-                throw 'execution aborted';
-            }
+        const generation = this.#generation;
 
-            if (timePassed !== 1) {
-                return;
+        window.setTimeout(() => {
+            if (! this.#isStopped && generation === this.#generation) {
+                callable();
             }
-
-            callable();
         }, duration);
     }
 }

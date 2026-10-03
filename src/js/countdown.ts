@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Countdown to a moment in time. Rolls only the digits that changed, stops at

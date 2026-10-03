@@ -6,6 +6,7 @@
 
 @use "sass:list";
 @use "sass:math";
+@use "../mixins";
 
 @function star($spikes, $inner) {
     $points: ();
@@ -27,12 +28,11 @@
 @mixin styles() {
     --ah-pop-burst: #ffcb2e;
 
+    @include mixins.stagger-letter;
+
     .letter {
-        display: inline-block;
         position: relative;
         isolation: isolate; // keeps the burst behind its own letter, not behind the page
-        opacity: 0;
-        white-space: pre;
 
         &:not([hidden]) {
             opacity: 1;
@@ -55,17 +55,9 @@
         }
     }
 
-    b[hidden].is-leaving {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        white-space: nowrap;
-        pointer-events: none;
-    }
+    @include mixins.leaving-phrase;
 
     b[hidden].is-leaving .letter[hidden] {
-        display: inline-block;
         animation: ah-pop-out 0.3s ease-in both;
     }
 

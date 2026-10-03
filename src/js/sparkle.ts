@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Sparkles: the phrase arrives with a scatter of four-pointed twinkles that
@@ -13,6 +13,7 @@
  */
 
 import AnimatedWordsElement from './words';
+import {numberAttribute} from './utilities';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -29,9 +30,7 @@ export default class SparkleAnimatedWordsElement extends AnimatedWordsElement {
     protected readonly sparkleClassName = 'sparkle';
 
     connectedCallback() {
-        const count = this.hasAttribute('sparkles')
-            ? parseInt(<string>this.getAttribute('sparkles'))
-            : DEFAULT_COUNT;
+        const count = numberAttribute(this, 'sparkles', DEFAULT_COUNT);
 
         this.querySelectorAll(this.wordSelector).forEach(word => this.scatter(word as HTMLElement, count));
 

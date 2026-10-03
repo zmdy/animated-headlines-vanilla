@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Flipboard: the phrase is shown on an airport-style split-flap board. Like
@@ -14,8 +14,8 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-import AnimatedWordsElement from './words';
-import {emit} from './utilities';
+import AnimatedBoardElement from './board';
+import {numberAttribute} from './utilities';
 
 const DEFAULT_CHARSET = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const PERSPECTIVE = 'perspective(420px) ';
@@ -37,65 +37,36 @@ function paint(half: HTMLElement, char: string): void {
     (half.firstElementChild as HTMLElement).textContent = char;
 }
 
-export default class FlipboardAnimatedWordsElement extends AnimatedWordsElement {
+export default class FlipboardAnimatedWordsElement extends AnimatedBoardElement {
     private tiles: Tile[] = [];
     private charset = DEFAULT_CHARSET;
     private speed = 90;
     private stagger = 70;
     private maxSteps = 12;
 
-    connectedCallback() {
+    protected configure(): void {
         this.charset = this.getAttribute('charset') || this.charset;
-        this.speed = this.hasAttribute('speed') ? parseInt(<string>this.getAttribute('speed')) : this.speed;
-        this.stagger = this.hasAttribute('delay') ? parseInt(<string>this.getAttribute('delay')) : this.stagger;
-        this.maxSteps = this.hasAttribute('steps') ? parseInt(<string>this.getAttribute('steps')) : this.maxSteps;
-
-        this.build();
-        super.connectedCallback();
+        this.speed = numberAttribute(this, 'speed', this.speed);
+        this.stagger = numberAttribute(this, 'delay', this.stagger);
+        this.maxSteps = numberAttribute(this, 'steps', this.maxSteps);
     }
 
     // The board has a fixed number of tiles, so there is nothing to measure.
     protected resize() {}
 
-    protected switchWord(oldWord: HTMLElement, newWord: HTMLElement) {
-        this.makeHidden(oldWord);
-        this.makeVisible(newWord);
-        this.show(this.phraseOf(newWord));
-        this.setAttribute('aria-label', newWord.textContent?.trim() ?? '');
-
-        emit(this, 'word-replaced', {old: oldWord, new: newWord});
+    // A split-flap board only has capitals.
+    protected phraseOf(word: HTMLElement): string {
+        return super.phraseOf(word).toUpperCase();
     }
 
-    private phraseOf(word: HTMLElement): string {
-        return (word.textContent ?? '').trim().replace(/\s+/g, ' ').toUpperCase();
-    }
+    protected createBoard(length: number, phrase: string): HTMLElement {
+        const board = this.board();
 
-    private build(): void {
-        // The host re-renders once per observed attribute and clones its
-        // children each time, so a board from an earlier pass may be there.
-        this.querySelector('.ah-board')?.remove();
+        this.tiles = Array.from({length}, () => this.makeTile());
+        board.append(...this.tiles.map(tile => tile.root));
+        this.settleOn(phrase);
 
-        const words = Array.from(this.querySelectorAll(this.wordSelector)) as HTMLElement[];
-        const length = Math.max(1, ...words.map(word => this.phraseOf(word).length));
-
-        const board = document.createElement('span');
-        board.className = 'ah-board';
-        board.setAttribute('aria-hidden', 'true');
-
-        this.tiles = [];
-        for (let i = 0; i < length; i++) {
-            const tile = this.makeTile();
-            this.tiles.push(tile);
-            board.appendChild(tile.root);
-        }
-        this.prepend(board);
-
-        const current = this.current();
-        if (current !== null) {
-            this.settleOn(this.phraseOf(current));
-            this.setAttribute('role', 'img');
-            this.setAttribute('aria-label', current.textContent?.trim() ?? '');
-        }
+        return board;
     }
 
     private makeTile(): Tile {
@@ -137,7 +108,7 @@ export default class FlipboardAnimatedWordsElement extends AnimatedWordsElement 
         paint(tile.bottom, tile.shown);
     }
 
-    private show(phrase: string): void {
+    protected show(phrase: string): void {
         let order = 0;
 
         this.tiles.forEach((tile, index) => {

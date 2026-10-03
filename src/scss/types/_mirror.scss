@@ -2,6 +2,8 @@
 // that close in on it and merge. Mirror-symmetric, so it reads as a reflection
 // snapping shut. The ghosts read the phrase from `data-text` (see mirror.ts).
 
+@use "../mixins";
+
 @mixin styles() {
     --ah-mirror-a: #ff3d81;
     --ah-mirror-b: #29c5ff;
@@ -37,13 +39,9 @@
     }
 
     // The leaving phrase stays painted so it can open back out.
+    @include mixins.leaving-phrase;
+
     b[hidden].is-leaving {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        white-space: nowrap;
-        pointer-events: none;
         animation: ah-mirror-out 0.5s ease-in both;
 
         &::before {

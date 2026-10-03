@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * @author Geoff Selby
@@ -7,6 +7,7 @@
  */
 
 import AnimatedWordsElement from "./words";
+import {numberAttribute} from "./utilities";
 
 class LoadingBarAnimatedWordsElement extends AnimatedWordsElement {
     readonly #loadingClassName = 'is-loading';
@@ -15,7 +16,7 @@ class LoadingBarAnimatedWordsElement extends AnimatedWordsElement {
     connectedCallback() {
         super.connectedCallback();
 
-        this.barDelay = this.hasAttribute('delay') ? parseInt(<string>this.getAttribute('delay')) : this.barDelay;
+        this.barDelay = numberAttribute(this, 'delay', this.barDelay);
         this.runAfter(this.barDelay, () => this.classList.add(this.#loadingClassName));
     }
 

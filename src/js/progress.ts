@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Progress: counts a number up (or down) to its target with an ease-out that
@@ -13,7 +13,7 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-import {emit, prefersReducedMotion} from './utilities';
+import {emit, numberAttribute, prefersReducedMotion} from './utilities';
 
 const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
 
@@ -34,7 +34,7 @@ export default class AnimatedProgressElement extends HTMLElement {
 
     connectedCallback() {
         this.build();
-        this.value = this.number('from', 0);
+        this.value = numberAttribute(this, 'from', 0);
         this.paint(this.value);
 
         const trigger = this.getAttribute('trigger') ?? 'view';
@@ -69,7 +69,7 @@ export default class AnimatedProgressElement extends HTMLElement {
 
         if (name === 'to' && this.played) {
             // count on from the current position
-            this.run(this.value, this.number('to', 100));
+            this.run(this.value, numberAttribute(this, 'to', 100));
         } else {
             this.paint(this.value);
         }
@@ -78,13 +78,7 @@ export default class AnimatedProgressElement extends HTMLElement {
     /** @api count from `from` to `to` (again, if it already ran) */
     public play(): void {
         this.played = true;
-        this.run(this.number('from', 0), this.number('to', 100));
-    }
-
-    private number(name: string, fallback: number): number {
-        const parsed = parseFloat(this.getAttribute(name) ?? '');
-
-        return Number.isFinite(parsed) ? parsed : fallback;
+        this.run(numberAttribute(this, 'from', 0), numberAttribute(this, 'to', 100));
     }
 
     private build(): void {
@@ -123,7 +117,7 @@ export default class AnimatedProgressElement extends HTMLElement {
         cancelAnimationFrame(this.frame!);
         this.classList.remove('is-landed');
 
-        const duration = Math.max(0, this.number('duration', 1800));
+        const duration = Math.max(0, numberAttribute(this, 'duration', 1800));
 
         if (prefersReducedMotion() || duration === 0 || from === to) {
             return this.land(to);
@@ -153,17 +147,17 @@ export default class AnimatedProgressElement extends HTMLElement {
     private paint(value: number): void {
         this.value = value;
 
-        const decimals = Math.max(0, Math.round(this.number('decimals', 0)));
+        const decimals = Math.max(0, Math.round(numberAttribute(this, 'decimals', 0)));
         this.prefixElement.textContent = this.getAttribute('prefix') ?? '';
         this.valueElement.textContent = this.format(value, decimals);
         this.suffixElement.textContent = this.getAttribute('suffix') ?? '';
 
         // The final figure is what assistive technology should hear, not
         // every step on the way there.
-        this.setAttribute('aria-label', (this.getAttribute('prefix') ?? '') + this.format(this.number('to', 100), decimals) + (this.getAttribute('suffix') ?? ''));
+        this.setAttribute('aria-label', (this.getAttribute('prefix') ?? '') + this.format(numberAttribute(this, 'to', 100), decimals) + (this.getAttribute('suffix') ?? ''));
 
-        const from = this.number('from', 0);
-        const to = this.number('to', 100);
+        const from = numberAttribute(this, 'from', 0);
+        const to = numberAttribute(this, 'to', 100);
         const ratio = to === from ? 1 : (value - from) / (to - from);
         this.style.setProperty('--ah-progress', Math.min(1, Math.max(0, ratio)).toFixed(4));
     }

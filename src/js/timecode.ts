@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Timecode: a running SMPTE-style counter (HH:MM:SS:FF) that ticks in frames.
@@ -13,7 +13,7 @@
  */
 
 import {AnimatedCounterElement, pad} from './counter';
-import {emit, prefersReducedMotion} from './utilities';
+import {emit, numberAttribute, prefersReducedMotion} from './utilities';
 
 const DAY = 24 * 3600;
 
@@ -28,6 +28,7 @@ export default class AnimatedTimecodeElement extends AnimatedCounterElement {
     private since = 0;
     private frame: number | undefined;
     private lastSecond = -1;
+    private lastTotal = -1;
 
     /** @api jump back to the start value */
     public reset(): void {
@@ -36,10 +37,11 @@ export default class AnimatedTimecodeElement extends AnimatedCounterElement {
     }
 
     protected begin(): void {
-        this.fps = Math.max(1, Math.round(this.number('fps', 30)));
+        this.fps = Math.max(1, Math.round(numberAttribute(this, 'fps', 30)));
         this.base = this.parse(this.getAttribute('start') ?? '');
         this.since = performance.now();
         this.lastSecond = -1;
+        this.lastTotal = -1;
 
         this.render();
 
@@ -82,6 +84,13 @@ export default class AnimatedTimecodeElement extends AnimatedCounterElement {
 
     private render(): void {
         const total = this.frames();
+
+        // The screen refreshes faster than most frame rates: skip the repeats.
+        if (total === this.lastTotal) {
+            return;
+        }
+        this.lastTotal = total;
+
         const second = Math.floor(total / this.fps) % DAY;
         const full = this.getAttribute('format') !== 'compact';
 

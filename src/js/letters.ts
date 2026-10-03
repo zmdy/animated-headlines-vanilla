@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * @author Geoff Selby
@@ -7,6 +7,7 @@
  */
 
 import AnimatedWordsElement from "./words";
+import {numberAttribute} from "./utilities";
 
 export default class AnimatedSingleLettersElement extends AnimatedWordsElement {
     lettersDelay: number = 50;
@@ -15,7 +16,7 @@ export default class AnimatedSingleLettersElement extends AnimatedWordsElement {
     connectedCallback() {
         super.connectedCallback();
 
-        this.lettersDelay = this.hasAttribute('delay') ? parseInt(<string>this.getAttribute('delay')) : this.lettersDelay;
+        this.lettersDelay = numberAttribute(this, 'delay', this.lettersDelay);
         this.querySelectorAll(this.wordSelector).forEach(this.splitIntoSingleLetters, this);
     }
 
@@ -56,10 +57,10 @@ export default class AnimatedSingleLettersElement extends AnimatedWordsElement {
 
         for (const child of word.childNodes) {
             if (child.nodeType === Node.TEXT_NODE) { // either the child is a text -> then split into letters
-                const letters = child.textContent!.split('');
-                for (let i in letters) {
+                // Array.from walks code points, so an emoji is one letter, not two halves
+                for (const letter of Array.from(child.textContent!)) {
                     const element = document.createElement('span');
-                    element.innerHTML = letters[i];
+                    element.textContent = letter;
                     letterElements.push(element);
                 }
             } else if (child.nodeType === Node.ELEMENT_NODE) { // otherwise if it is an element -> use as letter
@@ -76,7 +77,7 @@ export default class AnimatedSingleLettersElement extends AnimatedWordsElement {
             }
         });
 
-        word.innerHTML = letterElements.map((element) => element.outerHTML).join('');
+        word.replaceChildren(...letterElements);
         word.style.opacity = "1";
     }
 }

@@ -2,13 +2,14 @@
 // component swaps the text, see stagger.ts) and lands on the real one, while
 // the letters still spinning stay dim and tinted.
 
+@use "../mixins";
+
 @mixin styles() {
     --ah-shuffle-color: #ff4f8b;
 
+    @include mixins.stagger-letter;
+
     .letter {
-        display: inline-block;
-        opacity: 0;
-        white-space: pre;
         text-align: center;
 
         &:not([hidden]) {
@@ -22,17 +23,9 @@
         }
     }
 
-    b[hidden].is-leaving {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        white-space: nowrap;
-        pointer-events: none;
-    }
+    @include mixins.leaving-phrase;
 
     b[hidden].is-leaving .letter[hidden] {
-        display: inline-block;
         animation: ah-shuffle-out 0.3s ease-in both;
     }
 

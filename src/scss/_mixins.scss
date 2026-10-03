@@ -19,3 +19,26 @@
     transform: translateY(-50%);
   }
 }
+
+// The phrase that has just left stays painted (out of flow, on top of its
+// replacement), so its exit animation can play before it disappears.
+@mixin leaving-phrase() {
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+}
+
+// The base every per-letter effect starts from: hidden letters keep their
+// room (so the line does not breathe) but are invisible.
+@mixin stagger-letter() {
+    .letter {
+        display: inline-block;
+        opacity: 0;
+        white-space: pre;
+    }
+}

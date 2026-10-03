@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Swap: the phrase changes one letter at a time. Like the flipboard, the old
@@ -14,8 +14,8 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-import AnimatedWordsElement from './words';
-import {emit} from './utilities';
+import AnimatedBoardElement from './board';
+import {numberAttribute} from './utilities';
 
 interface Cell {
     root: HTMLElement;
@@ -23,60 +23,30 @@ interface Cell {
     token: number;
 }
 
-export default class SwapAnimatedWordsElement extends AnimatedWordsElement {
+export default class SwapAnimatedWordsElement extends AnimatedBoardElement {
     private cells: Cell[] = [];
     private duration = 420;
     private stagger = 140;
 
-    connectedCallback() {
-        this.duration = this.hasAttribute('speed') ? parseInt(<string>this.getAttribute('speed')) : this.duration;
-        this.stagger = this.hasAttribute('delay') ? parseInt(<string>this.getAttribute('delay')) : this.stagger;
+    protected configure(): void {
+        this.duration = numberAttribute(this, 'speed', this.duration);
+        this.stagger = numberAttribute(this, 'delay', this.stagger);
         this.style.setProperty('--ah-swap-duration', this.duration + 'ms');
-
-        this.build();
-        super.connectedCallback();
     }
 
-    protected switchWord(oldWord: HTMLElement, newWord: HTMLElement) {
-        this.makeHidden(oldWord);
-        this.makeVisible(newWord);
-        this.show(this.phraseOf(newWord));
-        this.setAttribute('aria-label', this.phraseOf(newWord));
+    protected createBoard(length: number, phrase: string): HTMLElement {
+        const board = this.board();
 
-        emit(this, 'word-replaced', {old: oldWord, new: newWord});
-    }
-
-    private phraseOf(word: HTMLElement): string {
-        return (word.textContent ?? '').trim().replace(/\s+/g, ' ');
-    }
-
-    private build(): void {
-        // The host re-renders once per observed attribute and clones its
-        // children each time, so a board from an earlier pass may be there.
-        this.querySelector('.ah-board')?.remove();
-
-        const words = Array.from(this.querySelectorAll(this.wordSelector)) as HTMLElement[];
-        const length = Math.max(1, ...words.map(word => this.phraseOf(word).length));
-        const current = this.current();
-        const phrase = current === null ? '' : this.phraseOf(current);
-
-        const board = document.createElement('span');
-        board.className = 'ah-board';
-        board.setAttribute('aria-hidden', 'true');
-
-        this.cells = [];
-        for (let i = 0; i < length; i++) {
+        this.cells = Array.from({length}, (_, index) => {
             const root = document.createElement('span');
             root.className = 'ah-cell';
-            root.appendChild(this.face(phrase.charAt(i), false));
+            root.appendChild(this.face(phrase.charAt(index), false));
             board.appendChild(root);
 
-            this.cells.push({root, shown: phrase.charAt(i), token: 0});
-        }
-        this.prepend(board);
+            return {root, shown: phrase.charAt(index), token: 0};
+        });
 
-        this.setAttribute('role', 'img');
-        this.setAttribute('aria-label', phrase);
+        return board;
     }
 
     private face(char: string, entering: boolean): HTMLElement {
@@ -87,7 +57,7 @@ export default class SwapAnimatedWordsElement extends AnimatedWordsElement {
         return face;
     }
 
-    private show(phrase: string): void {
+    protected show(phrase: string): void {
         let order = 0;
 
         this.cells.forEach((cell, index) => {

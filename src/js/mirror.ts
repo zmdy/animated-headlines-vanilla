@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Mirror: the phrase arrives flanked by two ghost copies that close in from

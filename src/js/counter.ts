@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Shared base of the counter family (clock, countdown, timecode): the value
@@ -49,21 +49,6 @@ export abstract class AnimatedCounterElement extends HTMLElement {
     protected end(): void {
         window.clearTimeout(this.timer);
         this.timer = undefined;
-    }
-
-    protected number(name: string, fallback: number): number {
-        const parsed = parseFloat(this.getAttribute(name) ?? '');
-
-        return Number.isFinite(parsed) ? parsed : fallback;
-    }
-
-    /** Boolean attribute that can be switched off with `name="false"`. */
-    protected flag(name: string, fallback: boolean): boolean {
-        if (! this.hasAttribute(name)) {
-            return fallback;
-        }
-
-        return this.getAttribute(name) !== 'false';
     }
 
     /**

@@ -6,13 +6,14 @@
 // and each letter carries its own perspective so the effect does not depend on
 // any ancestor.
 
+@use "../mixins";
+
 @mixin styles() {
     --ah-rolling-depth: 0.55em;
 
+    @include mixins.stagger-letter;
+
     .letter {
-        display: inline-block;
-        opacity: 0;
-        white-space: pre;
         backface-visibility: hidden;
         transform-origin: 50% 50% calc(var(--ah-rolling-depth) * -1);
 
@@ -22,17 +23,9 @@
         }
     }
 
-    b[hidden].is-leaving {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        white-space: nowrap;
-        pointer-events: none;
-    }
+    @include mixins.leaving-phrase;
 
     b[hidden].is-leaving .letter[hidden] {
-        display: inline-block;
         opacity: 1;
         animation: ah-rolling-out 0.5s cubic-bezier(0.6, 0, 0.8, 0.4) both;
     }

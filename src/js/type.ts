@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * @author Geoff Selby
@@ -7,7 +7,7 @@
  */
 
 import AnimatedSingleLettersElement from "./letters";
-import {emit} from "./utilities";
+import {emit, numberAttribute} from "./utilities";
 
 export default class TypeAnimatedWordsElement extends AnimatedSingleLettersElement {
     #waitingClassName = 'waiting';
@@ -17,7 +17,7 @@ export default class TypeAnimatedWordsElement extends AnimatedSingleLettersEleme
     connectedCallback() {
         super.connectedCallback();
 
-        this.selectionDuration = this.hasAttribute('selection') ? parseInt(<string>this.getAttribute('selection')) : this.selectionDuration;
+        this.selectionDuration = numberAttribute(this, 'selection', this.selectionDuration);
     }
 
     protected resize() {

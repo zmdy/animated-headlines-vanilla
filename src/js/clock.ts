@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Clock: the current time, in any IANA time zone, in 12 or 24 hour notation.
@@ -9,7 +9,7 @@
  */
 
 import {AnimatedCounterElement, pad} from './counter';
-import {emit} from './utilities';
+import {emit, flagAttribute} from './utilities';
 
 export default class AnimatedClockElement extends AnimatedCounterElement {
     static get observedAttributes() {
@@ -56,7 +56,7 @@ export default class AnimatedClockElement extends AnimatedCounterElement {
         const hour = parts.hour === '24' ? pad(0) : parts.hour;
 
         let text = hour + ':' + parts.minute;
-        if (this.flag('seconds', true)) {
+        if (flagAttribute(this, 'seconds', true)) {
             text += ':' + parts.second;
         }
         if (this.getAttribute('format') === '12h') {

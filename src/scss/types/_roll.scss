@@ -2,34 +2,26 @@
 // rolls up and out through the top of the window while the new one rolls up
 // into it from below - hard-masked, no fading, like a one-line ticker.
 
+@use "../mixins";
+
 @mixin styles() {
     // The window. Slightly generous sideways, so italic overhangs survive.
     b {
         clip-path: inset(-0.04em -0.15em);
     }
 
-    .letter {
-        display: inline-block;
-        opacity: 0;
-        white-space: pre;
+    @include mixins.stagger-letter;
 
+    .letter {
         &:not([hidden]) {
             opacity: 1;
             animation: ah-roll-in 0.55s cubic-bezier(0.7, 0, 0.2, 1) both;
         }
     }
 
-    b[hidden].is-leaving {
-        display: inline-block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        white-space: nowrap;
-        pointer-events: none;
-    }
+    @include mixins.leaving-phrase;
 
     b[hidden].is-leaving .letter[hidden] {
-        display: inline-block;
         opacity: 1;
         animation: ah-roll-out 0.55s cubic-bezier(0.7, 0, 0.2, 1) both;
     }

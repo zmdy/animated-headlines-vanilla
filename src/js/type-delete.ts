@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Typewriter that backspaces: the phrase is typed out, held, then erased one
@@ -9,6 +9,7 @@
  */
 
 import AnimatedSingleLettersElement from './letters';
+import {numberAttribute} from './utilities';
 
 export default class TypeDeleteAnimatedWordsElement extends AnimatedSingleLettersElement {
     protected readonly waitingClassName = 'waiting';
@@ -19,9 +20,7 @@ export default class TypeDeleteAnimatedWordsElement extends AnimatedSingleLetter
     connectedCallback() {
         super.connectedCallback();
 
-        this.eraseDelay = this.hasAttribute('erase')
-            ? parseInt(<string>this.getAttribute('erase'))
-            : Math.max(20, Math.round(this.lettersDelay * 0.6));
+        this.eraseDelay = numberAttribute(this, 'erase', Math.max(20, Math.round(this.lettersDelay * 0.6)));
 
         // The first phrase is typed in rather than just being there. The hold
         // for it is already scheduled by start(), so this pass must not queue

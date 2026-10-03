@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Clip reveal with a terminal caret: the phrase is wiped in behind the bar,

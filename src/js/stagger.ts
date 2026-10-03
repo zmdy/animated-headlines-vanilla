@@ -1,4 +1,4 @@
-/**!
+/**
  * Plain Vanilla JavaScript Animated Headline Component
  *
  * Staggered letters: the phrase is taken apart letter by letter and each
@@ -14,7 +14,7 @@
  */
 
 import AnimatedSingleLettersElement from './letters';
-import {prefersReducedMotion} from './utilities';
+import {numberAttribute, prefersReducedMotion} from './utilities';
 
 const DEFAULT_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&@*?';
 
@@ -29,8 +29,8 @@ export default class StaggerAnimatedLettersElement extends AnimatedSingleLetters
     connectedCallback() {
         super.connectedCallback();
 
-        this.steps = this.hasAttribute('steps') ? parseInt(<string>this.getAttribute('steps')) : this.steps;
-        this.tickDuration = this.hasAttribute('tick') ? parseInt(<string>this.getAttribute('tick')) : this.tickDuration;
+        this.steps = numberAttribute(this, 'steps', this.steps);
+        this.tickDuration = numberAttribute(this, 'tick', this.tickDuration);
         this.charset = this.getAttribute('charset') || this.charset;
 
         this.querySelectorAll('.' + this.letterClassName).forEach(letter => {
