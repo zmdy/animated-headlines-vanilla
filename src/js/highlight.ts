@@ -77,6 +77,17 @@ export const HIGHLIGHT_SHAPES: Record<string, string[]> = {
     marker: [
         'M16 88 C140 70 320 68 484 80',
     ],
+    // An underline that lands and then throws off two twinkles. The stars are
+    // filled rather than stroked, so they pop into place instead of being
+    // drawn (a dash offset only ever reveals a stroke).
+    // The box is stretched to the word and the viewBox is far wider than it is
+    // tall, so the twinkles are drawn wider than tall to come out roughly
+    // square once that squash is applied.
+    spark: [
+        'M10 128 C120 116 300 112 490 122',
+        'M455 0 Q461 19 497 24 Q461 29 455 48 Q449 29 413 24 Q449 19 455 0 Z',
+        'M48 8 Q52 23 78 26 Q52 29 48 44 Q44 29 18 26 Q44 23 48 8 Z',
+    ],
     'corner-ticks': [
         'M16 48 L16 16 L58 16',
         'M442 16 L484 16 L484 48',

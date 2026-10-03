@@ -1,20 +1,20 @@
-const r = (i, e, t, s = !1) => i.dispatchEvent(new CustomEvent(`via-animated-headline:${e}`, { bubbles: !0, cancelable: s, detail: t }));
-function C(i, e, t) {
+const h = (i, e, t, s = !1) => i.dispatchEvent(new CustomEvent(`via-animated-headline:${e}`, { bubbles: !0, cancelable: s, detail: t }));
+function y(i, e, t) {
   let s = performance.now();
-  requestAnimationFrame(function a(n) {
-    let l = (n - s) / t;
-    l > 1 && (l = 1);
-    let p = i(l);
-    e(p), l < 1 && requestAnimationFrame(a);
+  requestAnimationFrame(function a(l) {
+    let r = (l - s) / t;
+    r > 1 && (r = 1);
+    let g = i(r);
+    e(g), r < 1 && requestAnimationFrame(a);
   });
 }
-class h extends HTMLElement {
+class c extends HTMLElement {
   #e = !1;
   holdDelay = 2500;
   wordSelector = "b";
   leavingClassName = "is-leaving";
   connectedCallback() {
-    this.holdDelay = this.hasAttribute("hold") ? parseInt(this.getAttribute("hold")) : this.holdDelay, this.resize(), window.matchMedia("(prefers-reduced-motion: reduce)").matches || this.start(), r(this, "ready");
+    this.holdDelay = this.hasAttribute("hold") ? parseInt(this.getAttribute("hold")) : this.holdDelay, this.resize(), window.matchMedia("(prefers-reduced-motion: reduce)").matches || this.start(), h(this, "ready");
   }
   attributeChangedCallback() {
     this.resize();
@@ -24,15 +24,15 @@ class h extends HTMLElement {
     this.querySelectorAll(this.wordSelector).forEach(function(t) {
       const s = t, a = s.hasAttribute("hidden");
       a && (s.style.display = "inline-block", s.style.position = "absolute", s.style.visibility = "hidden", s.style.whiteSpace = "nowrap"), e = Math.max(s.offsetWidth, e), a && (s.style.removeProperty("display"), s.style.removeProperty("position"), s.style.removeProperty("visibility"), s.style.removeProperty("white-space"));
-    }), this.style.width = e + "px", r(this, "resized", { width: e.toString() });
+    }), this.style.width = e + "px", h(this, "resized", { width: e.toString() });
   }
   /** @api */
   start() {
-    this.#e = !1, this.runAfter(this.holdDelay, () => this.next()), r(this, "started");
+    this.#e = !1, this.runAfter(this.holdDelay, () => this.next()), h(this, "started");
   }
   /** @api */
   stop() {
-    this.#e = !0, r(this, "stopped");
+    this.#e = !0, h(this, "stopped");
   }
   /** @api */
   current() {
@@ -49,7 +49,7 @@ class h extends HTMLElement {
     return e.nextElementSibling ? e.nextElementSibling : e.parentNode.children[0];
   }
   switchWord(e, t) {
-    this.makeHidden(e), this.makeVisible(t), this.markLeaving(e), r(this, "word-replaced", { old: e, new: t });
+    this.makeHidden(e), this.makeVisible(t), this.markLeaving(e), h(this, "word-replaced", { old: e, new: t });
   }
   /**
    * A hidden element is `display: none`, so without this the exit half of
@@ -71,15 +71,15 @@ class h extends HTMLElement {
     e.setAttribute("hidden", "");
   }
   runAfter(e, t) {
-    C((s) => s, (s) => {
+    y((s) => s, (s) => {
       if (this.#e)
         throw "execution aborted";
       s === 1 && t();
     }, e);
   }
 }
-customElements.define("via-animated-words-headline", h);
-class o extends h {
+customElements.define("via-animated-words-headline", c);
+class o extends c {
   lettersDelay = 50;
   letterClassName = "letter";
   connectedCallback() {
@@ -105,9 +105,9 @@ class o extends h {
     for (const s of e.childNodes)
       if (s.nodeType === Node.TEXT_NODE) {
         const a = s.textContent.split("");
-        for (let n in a) {
-          const l = document.createElement("span");
-          l.innerHTML = a[n], t.push(l);
+        for (let l in a) {
+          const r = document.createElement("span");
+          r.innerHTML = a[l], t.push(r);
         }
       } else s.nodeType === Node.ELEMENT_NODE ? t.push(s) : console.warn("unsupported child node:", s);
     t.forEach((s) => {
@@ -116,7 +116,7 @@ class o extends h {
   }
 }
 customElements.define("via-animated-letters-headline", o);
-class u extends h {
+class p extends c {
   revealDelay = 600;
   connectedCallback() {
     super.connectedCallback(), this.revealDelay = this.hasAttribute("delay") ? parseInt(this.getAttribute("delay")) : this.revealDelay;
@@ -138,8 +138,8 @@ class u extends h {
     };
   }
 }
-customElements.define("via-animated-clip-headline", u);
-class f extends u {
+customElements.define("via-animated-clip-headline", p);
+class C extends p {
   waitingClassName = "waiting";
   showWord(e) {
     const t = this.animate(
@@ -154,8 +154,8 @@ class f extends u {
     this.classList.remove(this.waitingClassName), super.next(e);
   }
 }
-customElements.define("via-animated-clip-caret-headline", f);
-const c = "http://www.w3.org/2000/svg", b = "0 0 500 150", d = {
+customElements.define("via-animated-clip-caret-headline", C);
+const d = "http://www.w3.org/2000/svg", k = "0 0 500 150", u = {
   underline: [
     "M8 130 C104 116 206 112 308 116 C374 118 438 122 492 130"
   ],
@@ -204,14 +204,41 @@ const c = "http://www.w3.org/2000/svg", b = "0 0 500 150", d = {
   marker: [
     "M16 88 C140 70 320 68 484 80"
   ],
+  // An underline that lands and then throws off two twinkles. The stars are
+  // filled rather than stroked, so they pop into place instead of being
+  // drawn (a dash offset only ever reveals a stroke).
+  // The box is stretched to the word and the viewBox is far wider than it is
+  // tall, so the twinkles are drawn wider than tall to come out roughly
+  // square once that squash is applied.
+  spark: [
+    "M10 128 C120 116 300 112 490 122",
+    "M455 0 Q461 19 497 24 Q461 29 455 48 Q449 29 413 24 Q449 19 455 0 Z",
+    "M48 8 Q52 23 78 26 Q52 29 48 44 Q44 29 18 26 Q44 23 48 8 Z"
+  ],
   "corner-ticks": [
     "M16 48 L16 16 L58 16",
     "M442 16 L484 16 L484 48",
     "M484 102 L484 134 L442 134",
     "M58 134 L16 134 L16 102"
   ]
-}, g = "underline";
-class y extends h {
+}, E = "underline";
+function b(i, e) {
+  const t = u[e];
+  if (t === void 0) {
+    console.warn(
+      'unknown highlight shape "' + e + '" (must be one of ' + Object.keys(u) + ")"
+    );
+    return;
+  }
+  if (i.querySelector("svg") !== null)
+    return;
+  const s = document.createElementNS(d, "svg");
+  s.setAttribute("viewBox", k), s.setAttribute("preserveAspectRatio", "none"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), t.forEach((a) => {
+    const l = document.createElementNS(d, "path");
+    l.setAttribute("d", a), l.setAttribute("pathLength", "100"), s.appendChild(l);
+  }), i.appendChild(s);
+}
+class v extends c {
   loopingClassName = "is-looping";
   connectedCallback() {
     this.decorateWords(), super.connectedCallback();
@@ -227,27 +254,45 @@ class y extends h {
     return this.querySelectorAll(this.wordSelector).length < 2;
   }
   decorateWords() {
-    const e = this.getAttribute("shape") ?? g, t = d[e];
-    if (t === void 0) {
-      console.warn(
-        'unknown highlight shape "' + e + '" (must be one of ' + Object.keys(d) + ")"
-      );
-      return;
-    }
-    this.isSinglePhrase() && this.classList.add(this.loopingClassName), this.querySelectorAll(this.wordSelector).forEach((s) => this.drawShape(s, t));
-  }
-  drawShape(e, t) {
-    if (e.querySelector("svg") !== null)
-      return;
-    const s = document.createElementNS(c, "svg");
-    s.setAttribute("viewBox", b), s.setAttribute("preserveAspectRatio", "none"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), t.forEach((a) => {
-      const n = document.createElementNS(c, "path");
-      n.setAttribute("d", a), n.setAttribute("pathLength", "100"), s.appendChild(n);
-    }), e.appendChild(s);
+    const e = this.getAttribute("shape") ?? E;
+    this.isSinglePhrase() && this.classList.add(this.loopingClassName), this.querySelectorAll(this.wordSelector).forEach((t) => b(t, e));
   }
 }
-customElements.define("via-animated-highlight-headline", y);
-class L extends h {
+customElements.define("via-animated-highlight-headline", v);
+const L = "marker";
+class A extends C {
+  connectedCallback() {
+    const e = this.getAttribute("shape") ?? L;
+    this.querySelectorAll(this.wordSelector).forEach((t) => b(t, e)), super.connectedCallback();
+  }
+}
+customElements.define("via-animated-marker-caret-headline", A);
+const m = "http://www.w3.org/2000/svg", x = "M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z", S = 7;
+function n(i, e) {
+  return i + Math.random() * (e - i);
+}
+class N extends c {
+  sparkleClassName = "sparkle";
+  connectedCallback() {
+    const e = this.hasAttribute("sparkles") ? parseInt(this.getAttribute("sparkles")) : S;
+    this.querySelectorAll(this.wordSelector).forEach((t) => this.scatter(t, e)), super.connectedCallback();
+  }
+  scatter(e, t) {
+    if (e.querySelector("." + this.sparkleClassName) === null)
+      for (let s = 0; s < t; s++)
+        e.appendChild(this.sparkle(s, t));
+  }
+  sparkle(e, t) {
+    const s = document.createElementNS(m, "svg");
+    s.setAttribute("viewBox", "0 0 24 24"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), s.setAttribute("class", this.sparkleClassName);
+    const a = n(9, 19), l = (e + n(0.15, 0.85)) / t;
+    s.style.setProperty("--sparkle-size", a.toFixed(1) + "px"), s.style.setProperty("--sparkle-x", (l * 100).toFixed(1) + "%"), s.style.setProperty("--sparkle-y", n(-22, 92).toFixed(1) + "%"), s.style.setProperty("--sparkle-delay", n(0, 1.6).toFixed(2) + "s"), s.style.setProperty("--sparkle-duration", n(1.1, 2.1).toFixed(2) + "s"), s.style.setProperty("--sparkle-turn", n(-40, 40).toFixed(0) + "deg");
+    const r = document.createElementNS(m, "path");
+    return r.setAttribute("d", x), s.appendChild(r), s;
+  }
+}
+customElements.define("via-animated-sparkle-headline", N);
+class M extends c {
   #e = "is-loading";
   barDelay = 500;
   connectedCallback() {
@@ -257,8 +302,8 @@ class L extends h {
     super.next(e), e = e ?? this.current(), e !== null && (e.parentNode.classList.remove(this.#e), this.runAfter(this.barDelay, () => e.parentNode.classList.add(this.#e)));
   }
 }
-customElements.define("via-animated-loading-headline", L);
-class v extends o {
+customElements.define("via-animated-loading-headline", M);
+class D extends o {
   #e = "waiting";
   #t = "selected";
   selectionDuration = 500;
@@ -269,7 +314,7 @@ class v extends o {
   }
   showWord(e) {
     const t = this.current();
-    this.showLetter(e.querySelector("." + this.letterClassName), e), this.makeVisible(e), r(this, "word-replaced", { old: t, new: e });
+    this.showLetter(e.querySelector("." + this.letterClassName), e), this.makeVisible(e), h(this, "word-replaced", { old: t, new: e });
   }
   next(e = null) {
     if (e = e ?? this.current(), e === null)
@@ -283,8 +328,8 @@ class v extends o {
     super.showLetter(e, t, s), e.nextElementSibling || this.runAfter(200, () => t.parentNode.classList.add(this.#e));
   }
 }
-customElements.define("via-animated-type-headline", v);
-class E extends o {
+customElements.define("via-animated-type-headline", D);
+class W extends o {
   waitingClassName = "waiting";
   /** Backspacing is quicker than typing, the way it is for a real typist. */
   eraseDelay = 40;
@@ -326,9 +371,9 @@ class E extends o {
     this.classList.add(this.waitingClassName), s && this.runAfter(this.holdDelay, () => this.next(t));
   }
 }
-customElements.define("via-animated-type-delete-headline", E);
-var m = /* @__PURE__ */ ((i) => (i.Blur = "blur", i.Bounce = "bounce", i.Clip = "clip", i.ClipCaret = "clip-caret", i.Glitch = "glitch", i.Highlight = "highlight", i.LoadingBar = "loading-bar", i.Push = "push", i.Rotate1 = "rotate-1", i.Rotate2 = "rotate-2", i.Rotate3 = "rotate-3", i.Scale = "scale", i.Slide = "slide", i.Type = "type", i.TypeDelete = "type-delete", i.Wave = "wave", i.Zoom = "zoom", i))(m || {});
-function x(i, e) {
+customElements.define("via-animated-type-delete-headline", W);
+var f = /* @__PURE__ */ ((i) => (i.Blur = "blur", i.Bounce = "bounce", i.Clip = "clip", i.ClipCaret = "clip-caret", i.Glitch = "glitch", i.Highlight = "highlight", i.LoadingBar = "loading-bar", i.MarkerCaret = "marker-caret", i.Push = "push", i.Rotate1 = "rotate-1", i.Rotate2 = "rotate-2", i.Rotate3 = "rotate-3", i.Scale = "scale", i.Slide = "slide", i.Sparkle = "sparkle", i.Type = "type", i.TypeDelete = "type-delete", i.Wave = "wave", i.Zoom = "zoom", i))(f || {});
+function w(i, e) {
   let t;
   switch (i) {
     case "clip":
@@ -342,6 +387,12 @@ function x(i, e) {
       break;
     case "highlight":
       t = document.createElement("via-animated-highlight-headline");
+      break;
+    case "marker-caret":
+      t = document.createElement("via-animated-marker-caret-headline");
+      break;
+    case "sparkle":
+      t = document.createElement("via-animated-sparkle-headline");
       break;
     case "push":
     case "slide":
@@ -365,11 +416,11 @@ function x(i, e) {
       t = document.createElement("via-animated-type-delete-headline");
       break;
     default:
-      throw new Error("invalid animation type " + i + " (must be one of " + Object.values(m) + ")");
+      throw new Error("invalid animation type " + i + " (must be one of " + Object.values(f) + ")");
   }
   return Array.from(e).forEach((s) => t.setAttribute(s.name, s.value)), t;
 }
-class A extends HTMLElement {
+class H extends HTMLElement {
   static get observedAttributes() {
     return ["animation", "hold", "delay", "shape"];
   }
@@ -380,15 +431,15 @@ class A extends HTMLElement {
     this.render();
   }
   render() {
-    const e = this.getAttribute("animation"), t = x(e, this.attributes);
+    const e = this.getAttribute("animation"), t = w(e, this.attributes);
     Array.from(this.children).forEach((s) => {
       s.tagName?.startsWith("VIA-ANIMATED-") ? s.childNodes.forEach((a) => t.appendChild(a.cloneNode(!0))) : t.appendChild(s.cloneNode(!0));
     }), this.innerHTML = "", this.appendChild(t);
   }
 }
-customElements.define("via-animated-headline", A);
+customElements.define("via-animated-headline", H);
 export {
-  m as AnimationType
+  f as AnimationType
 };
 /**!
  * Plain Vanilla JavaScript Animated Headline Component
@@ -415,6 +466,29 @@ export {
  * Every path carries `pathLength="100"`, which normalises its length, so the
  * draw-on animation is a plain CSS keyframe (`stroke-dashoffset: 100 -> 0`)
  * and no JavaScript has to measure anything.
+ *
+ * @author Christoph Massmann <cm@vianetz.com>
+ * @license https://opensource.org/licenses/MIT MIT License
+ */
+/**!
+ * Plain Vanilla JavaScript Animated Headline Component
+ *
+ * A highlighter that collapses and reopens between phrases: the marker (and
+ * the word under it) is wiped back to the caret, the phrase is swapped behind
+ * it, and the ink grows out again at the width of the new word.
+ *
+ * @author Christoph Massmann <cm@vianetz,com>
+ * @license https://opensource.org/licenses/MIT MIT License
+ */
+/**!
+ * Plain Vanilla JavaScript Animated Headline Component
+ *
+ * Sparkles: the phrase arrives with a scatter of four-pointed twinkles that
+ * pop in and out around it.
+ *
+ * The positions, sizes and offsets are rolled once, when the element is set
+ * up, and handed to CSS as inline values - so the twinkling itself costs no
+ * JavaScript at all.
  *
  * @author Christoph Massmann <cm@vianetz.com>
  * @license https://opensource.org/licenses/MIT MIT License
