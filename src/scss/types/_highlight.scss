@@ -86,6 +86,17 @@
         svg {
             z-index: -1;
         }
+
+        // Rotating: the pen sweeps across the phrase and the text is revealed
+        // under it, so the ink appears to re-fit itself to whatever word has
+        // just arrived instead of cutting from one width to the next.
+        // The sweep reveals the phrase once and leaves it standing. A single
+        // phrase keeps its text on screen and only the ink loops (the path
+        // keeps its own looping animation); wiping the word away over and over
+        // would be no good for a headline that never changes.
+        b:not([hidden]) {
+            animation: ah-marker-sweep var(--ah-draw-duration) var(--ah-draw-ease) both;
+        }
     }
 
     // Two strokes drawn on the same clock read as a machine. Giving each its
@@ -137,6 +148,13 @@
             stroke-dashoffset: 0;
             animation: none !important;
         }
+
+        // The marker sweep fills backwards, so without this the phrase would
+        // be left clipped to nothing instead of simply standing there.
+        b {
+            animation: none !important;
+            clip-path: none !important;
+        }
     }
 
     // The short opacity ramp is the pen touching down: without it the stroke
@@ -154,6 +172,16 @@
         100% {
             stroke-dashoffset: 0;
             opacity: 1;
+        }
+    }
+
+    @keyframes ah-marker-sweep {
+        from {
+            clip-path: inset(0 100% 0 0);
+        }
+
+        to {
+            clip-path: inset(0 0 0 0);
         }
     }
 
