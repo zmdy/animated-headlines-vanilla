@@ -1,0 +1,58 @@
+// Soft focus: the phrase resolves out of a defocused blur and dissolves back
+// into one on the way out.
+
+@mixin styles() {
+    b {
+        opacity: 0;
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-blur-in 0.7s ease-out both;
+        }
+    }
+
+    // A phrase on its way out still has to be painted, so it is taken out of
+    // flow rather than removed. Only the phrase that just left carries
+    // `is-leaving`, so the ones that merely start hidden stay silent.
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: ah-blur-out 0.7s ease-in both;
+    }
+
+    @keyframes ah-blur-in {
+        0% {
+            opacity: 0;
+            filter: blur(14px);
+            transform: scale(0.92);
+        }
+
+        60% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+    }
+
+    @keyframes ah-blur-out {
+        0% {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            filter: blur(14px);
+            transform: scale(1.06);
+        }
+    }
+}

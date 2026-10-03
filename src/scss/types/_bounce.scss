@@ -1,0 +1,56 @@
+// Drop and settle: the phrase falls in, overshoots, and bounces to rest.
+
+@mixin styles() {
+    b {
+        opacity: 0;
+        transform-origin: 50% 100%;
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-bounce-in 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.28) both;
+        }
+    }
+
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: ah-bounce-out 0.5s ease-in both;
+    }
+
+    @keyframes ah-bounce-in {
+        0% {
+            opacity: 0;
+            transform: translateY(-1.2em) scale(0.9);
+        }
+
+        55% {
+            opacity: 1;
+            transform: translateY(0.14em) scale(1.05);
+        }
+
+        75% {
+            transform: translateY(-0.06em) scale(0.99);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes ah-bounce-out {
+        0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(0.9em) scale(0.92);
+        }
+    }
+}

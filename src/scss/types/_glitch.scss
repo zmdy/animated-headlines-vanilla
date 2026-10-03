@@ -1,0 +1,76 @@
+// Signal glitch: the phrase snaps in through a chromatic split that settles
+// onto the real text. Stepped easing keeps it jittery instead of smooth.
+
+@mixin styles() {
+    --ah-glitch-cyan: #00e5ff;
+    --ah-glitch-magenta: #ff0059;
+
+    b {
+        opacity: 0;
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-glitch-in 0.6s steps(2, end) both;
+        }
+    }
+
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: ah-glitch-out 0.45s steps(2, end) both;
+    }
+
+    @keyframes ah-glitch-in {
+        0% {
+            opacity: 0;
+            transform: translateX(-0.18em) skewX(14deg);
+            text-shadow: 0.1em 0 var(--ah-glitch-magenta), -0.1em 0 var(--ah-glitch-cyan);
+        }
+
+        30% {
+            opacity: 1;
+            transform: translateX(0.14em) skewX(-9deg);
+            text-shadow: -0.12em 0 var(--ah-glitch-magenta), 0.12em 0 var(--ah-glitch-cyan);
+        }
+
+        55% {
+            transform: translateX(-0.08em) skewX(5deg);
+            text-shadow: 0.07em 0 var(--ah-glitch-magenta), -0.07em 0 var(--ah-glitch-cyan);
+        }
+
+        80% {
+            transform: translateX(0.04em) skewX(-2deg);
+            text-shadow: -0.03em 0 var(--ah-glitch-magenta), 0.03em 0 var(--ah-glitch-cyan);
+        }
+
+        100% {
+            opacity: 1;
+            transform: none;
+            text-shadow: none;
+        }
+    }
+
+    @keyframes ah-glitch-out {
+        0% {
+            opacity: 1;
+            transform: none;
+            text-shadow: none;
+        }
+
+        40% {
+            opacity: 1;
+            transform: translateX(-0.1em) skewX(8deg);
+            text-shadow: 0.09em 0 var(--ah-glitch-cyan), -0.09em 0 var(--ah-glitch-magenta);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(0.2em) skewX(-14deg);
+            text-shadow: -0.14em 0 var(--ah-glitch-cyan), 0.14em 0 var(--ah-glitch-magenta);
+        }
+    }
+}

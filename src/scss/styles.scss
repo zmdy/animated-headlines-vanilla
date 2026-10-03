@@ -13,6 +13,7 @@ via-animated-words-headline,
 via-animated-letters-headline,
 via-animated-loading-headline,
 via-animated-clip-headline,
+via-animated-highlight-headline,
 via-animated-type-headline {
     @include core.styles;
 
@@ -43,6 +44,22 @@ via-animated-type-headline {
     &[animation="zoom"] {
         @include types.zoom-styles;
     }
+
+    &[animation="blur"] {
+        @include types.blur-styles;
+    }
+
+    &[animation="bounce"] {
+        @include types.bounce-styles;
+    }
+
+    &[animation="glitch"] {
+        @include types.glitch-styles;
+    }
+
+    &[animation="wave"] {
+        @include types.wave-styles;
+    }
 }
 
 via-animated-type-headline {
@@ -55,4 +72,8 @@ via-animated-loading-headline {
 
 via-animated-clip-headline {
     @include types.clip-styles;
+}
+
+via-animated-highlight-headline {
+    @include types.highlight-styles;
 }

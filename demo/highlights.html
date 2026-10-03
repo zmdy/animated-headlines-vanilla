@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.bunny.net/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./dist/animated-headline.css">
+
+    <style>
+        /* Demo-only theming: every knob below is a public custom property. */
+        .ink-red    { --ah-highlight-color: #e63946; }
+        .ink-blue   { --ah-highlight-color: #1d6feb; }
+        .ink-green  { --ah-highlight-color: #0f9d58; }
+        .ink-violet { --ah-highlight-color: #7c5cff; }
+        .ink-ink    { --ah-highlight-color: #111827; }
+
+        .thin  { --ah-highlight-width: 4px; }
+        .bold  { --ah-highlight-width: 10px; }
+    </style>
+
+    <title>Animated Headlines — Highlight Shapes</title>
+</head>
+
+<body>
+    <section class="title">
+        <h1>Highlight Shapes</h1>
+    </section>
+
+    <!-- Underline -->
+    <section class="intro">
+        <h2 class="animation-type">Underline</h2>
+        <h1>
+            Design that feels
+            <via-animated-headline animation="highlight" shape="underline" class="ink-red">
+                <b>effortless</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Double underline -->
+    <section class="intro">
+        <h2 class="animation-type">Double Underline</h2>
+        <h1>
+            Read the
+            <via-animated-headline animation="highlight" shape="double-underline" class="ink-blue">
+                <b>fine print</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Scribble -->
+    <section class="intro">
+        <h2 class="animation-type">Scribble</h2>
+        <h1>
+            Ship it
+            <via-animated-headline animation="highlight" shape="scribble" class="ink-red">
+                <b>today</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Circle -->
+    <section class="intro">
+        <h2 class="animation-type">Circle</h2>
+        <h1>
+            Pick the
+            <via-animated-headline animation="highlight" shape="circle" class="ink-red">
+                <b>right one</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Zigzag -->
+    <section class="intro">
+        <h2 class="animation-type">ZigZag</h2>
+        <h1>
+            Keep it
+            <via-animated-headline animation="highlight" shape="zigzag" class="ink-violet">
+                <b>sharp</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Strikethrough -->
+    <section class="intro">
+        <h2 class="animation-type">Strikethrough</h2>
+        <h1>
+            This is
+            <via-animated-headline animation="highlight" shape="strikethrough" class="ink-red">
+                <b>not hard</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Cross out -->
+    <section class="intro">
+        <h2 class="animation-type">Cross Out</h2>
+        <h1>
+            We dropped the
+            <via-animated-headline animation="highlight" shape="cross-out" class="ink-red">
+                <b>busywork</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Diagonal -->
+    <section class="intro">
+        <h2 class="animation-type">Diagonal</h2>
+        <h1>
+            Cut the
+            <via-animated-headline animation="highlight" shape="diagonal" class="ink-red">
+                <b>noise</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Box (new) -->
+    <section class="intro">
+        <h2 class="animation-type">Box <small>(new)</small></h2>
+        <h1>
+            Everything in one
+            <via-animated-headline animation="highlight" shape="box" class="ink-ink thin">
+                <b>place</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Brackets (new) -->
+    <section class="intro">
+        <h2 class="animation-type">Brackets <small>(new)</small></h2>
+        <h1>
+            Built for
+            <via-animated-headline animation="highlight" shape="brackets" class="ink-violet">
+                <b>developers</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Arc (new) -->
+    <section class="intro">
+        <h2 class="animation-type">Arc <small>(new)</small></h2>
+        <h1>
+            A softer
+            <via-animated-headline animation="highlight" shape="arc" class="ink-green">
+                <b>landing</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Wave (new) -->
+    <section class="intro">
+        <h2 class="animation-type">Wave <small>(new)</small></h2>
+        <h1>
+            Ride the
+            <via-animated-headline animation="highlight" shape="wave" class="ink-blue">
+                <b>momentum</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Marker (new) -->
+    <section class="intro">
+        <h2 class="animation-type">Marker <small>(new)</small></h2>
+        <h1>
+            The part that
+            <via-animated-headline animation="highlight" shape="marker">
+                <b>matters</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Corner ticks (new) -->
+    <section class="intro">
+        <h2 class="animation-type">Corner Ticks <small>(new)</small></h2>
+        <h1>
+            Framed for
+            <via-animated-headline animation="highlight" shape="corner-ticks" class="ink-ink thin">
+                <b>focus</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <!-- Rotating + highlight -->
+    <section class="intro">
+        <h2 class="animation-type">Rotating phrases + highlight</h2>
+        <h1>
+            My favorite food is
+            <via-animated-headline animation="highlight" shape="circle" hold="2600" class="ink-red">
+                <b>pizza</b>
+                <b hidden>sushi</b>
+                <b hidden>steak</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <script src="./dist/animated-headline.js" type="module"></script>
+</body>
+</html>

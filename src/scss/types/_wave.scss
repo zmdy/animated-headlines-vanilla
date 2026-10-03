@@ -1,0 +1,70 @@
+// Travelling wave: each letter crests at its own moment, so the phrase reads
+// as one wave rolling through it rather than a flat stagger.
+//
+// The per-letter timing comes from the component revealing one letter after
+// the other (the `delay` attribute), so the keyframes stay per-letter.
+
+@mixin styles() {
+    b {
+        opacity: 0;
+
+        &:not([hidden]) {
+            opacity: 1;
+        }
+    }
+
+    .letter {
+        display: inline-block;
+        opacity: 0;
+        white-space: pre;
+
+        &:not([hidden]) {
+            animation: ah-wave-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+    }
+
+    // The leaving phrase stays painted so its letters can roll back out.
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 1;
+    }
+
+    b[hidden].is-leaving .letter[hidden] {
+        display: inline-block;
+        animation: ah-wave-down 0.4s ease-in both;
+    }
+
+    @keyframes ah-wave-up {
+        0% {
+            opacity: 0;
+            transform: translateY(0.6em) scale(0.85);
+        }
+
+        55% {
+            opacity: 1;
+            transform: translateY(-0.22em) scale(1.04);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes ah-wave-down {
+        0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(-0.5em) scale(0.85);
+        }
+    }
+}

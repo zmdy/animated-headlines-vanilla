@@ -11,11 +11,16 @@ import '../scss/styles.scss';
 import './letters';
 import './words';
 import './clip';
+import './highlight';
 import './loading-bar';
 import './type';
 
 export enum AnimationType {
+    Blur = 'blur',
+    Bounce = 'bounce',
     Clip = 'clip',
+    Glitch = 'glitch',
+    Highlight = 'highlight',
     LoadingBar = 'loading-bar',
     Push = 'push',
     Rotate1 = 'rotate-1',
@@ -24,6 +29,7 @@ export enum AnimationType {
     Scale = 'scale',
     Slide = 'slide',
     Type = 'type',
+    Wave = 'wave',
     Zoom = 'zoom'
 }
 
@@ -37,15 +43,22 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
         case AnimationType.LoadingBar:
             element = document.createElement('via-animated-loading-headline');
             break;
+        case AnimationType.Highlight:
+            element = document.createElement('via-animated-highlight-headline');
+            break;
         case AnimationType.Push:
         case AnimationType.Slide:
         case AnimationType.Rotate1:
         case AnimationType.Zoom:
+        case AnimationType.Blur:
+        case AnimationType.Bounce:
+        case AnimationType.Glitch:
             element = document.createElement('via-animated-words-headline');
             break;
         case AnimationType.Scale:
         case AnimationType.Rotate2:
         case AnimationType.Rotate3:
+        case AnimationType.Wave:
             element = document.createElement('via-animated-letters-headline');
             break;
         case AnimationType.Type:
@@ -67,7 +80,7 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
  */
 class AnimatedHeadline extends HTMLElement {
     static get observedAttributes() {
-        return ['animation', 'hold', 'delay'];
+        return ['animation', 'hold', 'delay', 'shape'];
     }
 
     connectedCallback() {
