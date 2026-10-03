@@ -13,6 +13,7 @@ via-animated-words-headline,
 via-animated-letters-headline,
 via-animated-loading-headline,
 via-animated-clip-headline,
+via-animated-clip-caret-headline,
 via-animated-highlight-headline,
 via-animated-type-headline {
     @include core.styles;
@@ -70,8 +71,13 @@ via-animated-loading-headline {
     @include types.loading-bar-styles;
 }
 
-via-animated-clip-headline {
+via-animated-clip-headline,
+via-animated-clip-caret-headline {
     @include types.clip-styles;
+}
+
+via-animated-clip-caret-headline {
+    @include types.clip-caret-styles;
 }
 
 via-animated-highlight-headline {

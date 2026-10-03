@@ -1,0 +1,25 @@
+// Adds a blinking terminal caret to the clip reveal. Layered on top of the
+// clip styles, so it only describes what differs.
+
+@mixin styles() {
+    --ah-caret-blink-duration: 1s;
+
+    @media (prefers-reduced-motion: no-preference) {
+        // Stepped, not faded: a caret snaps on and off.
+        &.waiting::after {
+            animation: ah-caret-blink var(--ah-caret-blink-duration) steps(1, end) infinite;
+        }
+    }
+
+    @keyframes ah-caret-blink {
+        0%,
+        50% {
+            opacity: 1;
+        }
+
+        50.01%,
+        100% {
+            opacity: 0;
+        }
+    }
+}

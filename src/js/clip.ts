@@ -8,7 +8,7 @@
 
 import AnimatedWordsElement from "./words";
 
-class ClipAnimatedWordsElement extends AnimatedWordsElement {
+export default class ClipAnimatedWordsElement extends AnimatedWordsElement {
     revealDelay= 600;
 
     connectedCallback() {

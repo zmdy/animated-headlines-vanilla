@@ -11,6 +11,7 @@ import '../scss/styles.scss';
 import './letters';
 import './words';
 import './clip';
+import './clip-caret';
 import './highlight';
 import './loading-bar';
 import './type';
@@ -19,6 +20,7 @@ export enum AnimationType {
     Blur = 'blur',
     Bounce = 'bounce',
     Clip = 'clip',
+    ClipCaret = 'clip-caret',
     Glitch = 'glitch',
     Highlight = 'highlight',
     LoadingBar = 'loading-bar',
@@ -39,6 +41,9 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
     switch (animationType) {
         case AnimationType.Clip:
             element = document.createElement('via-animated-clip-headline');
+            break;
+        case AnimationType.ClipCaret:
+            element = document.createElement('via-animated-clip-caret-headline');
             break;
         case AnimationType.LoadingBar:
             element = document.createElement('via-animated-loading-headline');
