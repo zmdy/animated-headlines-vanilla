@@ -14,6 +14,7 @@ import './clip';
 import './clip-caret';
 import './highlight';
 import './marker-caret';
+import './sparkle';
 import './loading-bar';
 import './type';
 import './type-delete';
@@ -33,6 +34,7 @@ export enum AnimationType {
     Rotate3 = 'rotate-3',
     Scale = 'scale',
     Slide = 'slide',
+    Sparkle = 'sparkle',
     Type = 'type',
     TypeDelete = 'type-delete',
     Wave = 'wave',
@@ -57,6 +59,9 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
             break;
         case AnimationType.MarkerCaret:
             element = document.createElement('via-animated-marker-caret-headline');
+            break;
+        case AnimationType.Sparkle:
+            element = document.createElement('via-animated-sparkle-headline');
             break;
         case AnimationType.Push:
         case AnimationType.Slide:

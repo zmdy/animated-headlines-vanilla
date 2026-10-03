@@ -1,0 +1,87 @@
+// Four-pointed twinkles scattered around the phrase. Every sparkle carries its
+// own position, size and offsets as inline custom properties, so one keyframe
+// covers the lot and nothing is driven from JavaScript.
+
+@mixin styles() {
+    --ah-sparkle-color: #9e7aff;
+    --ah-sparkle-color-alt: #fe8bbb;
+
+    b {
+        position: relative;
+        opacity: 0;
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-sparkle-word-in 0.6s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+        }
+    }
+
+    .sparkle {
+        position: absolute;
+        left: var(--sparkle-x);
+        top: var(--sparkle-y);
+        width: var(--sparkle-size);
+        height: var(--sparkle-size);
+        margin-inline-start: calc(var(--sparkle-size) / -2);
+        margin-block-start: calc(var(--sparkle-size) / -2);
+        pointer-events: none;
+        opacity: 0;
+        overflow: visible;
+        will-change: transform, opacity;
+    }
+
+    .sparkle path {
+        fill: var(--ah-sparkle-color);
+    }
+
+    // Alternating ink keeps the scatter from looking printed.
+    .sparkle:nth-of-type(2n) path {
+        fill: var(--ah-sparkle-color-alt);
+    }
+
+    b:not([hidden]) .sparkle {
+        animation: ah-sparkle-pop var(--sparkle-duration) var(--sparkle-delay) cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite both;
+    }
+
+    @media (prefers-reduced-motion: reduce), print {
+        .sparkle {
+            display: none;
+        }
+    }
+
+    @keyframes ah-sparkle-word-in {
+        from {
+            opacity: 0;
+            transform: translateY(0.18em);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    // Hold near full size through the middle so each twinkle reads as a shape
+    // rather than a flicker, then shrink away on the same curve it grew on.
+    @keyframes ah-sparkle-pop {
+        0% {
+            opacity: 0;
+            transform: scale(0) rotate(0);
+        }
+
+        30% {
+            opacity: 1;
+            transform: scale(1) rotate(calc(var(--sparkle-turn) / 2));
+        }
+
+        70% {
+            opacity: 1;
+            transform: scale(1) rotate(calc(var(--sparkle-turn) / 2));
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(0) rotate(var(--sparkle-turn));
+        }
+    }
+}

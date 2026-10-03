@@ -15,6 +15,7 @@ via-animated-loading-headline,
 via-animated-clip-headline,
 via-animated-clip-caret-headline,
 via-animated-marker-caret-headline,
+via-animated-sparkle-headline,
 via-animated-highlight-headline,
 via-animated-type-headline,
 via-animated-type-delete-headline {
@@ -91,6 +92,10 @@ via-animated-marker-caret-headline {
 
 via-animated-marker-caret-headline {
     @include types.marker-caret-styles;
+}
+
+via-animated-sparkle-headline {
+    @include types.sparkle-styles;
 }
 
 via-animated-highlight-headline {
