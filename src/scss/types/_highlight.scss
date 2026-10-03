@@ -84,6 +84,32 @@
         }
     }
 
+    // Two strokes drawn on the same clock read as a machine. Giving each its
+    // own start, length and curve - the second one setting off before the
+    // first has landed, then trailing behind it - is what makes the pair feel
+    // hand-drawn.
+    &[shape="double-underline"] {
+        // The second stroke sets off before the first has landed and rides a
+        // looser curve, so the pair never moves in lockstep.
+        b:not([hidden]) svg path:nth-of-type(2) {
+            animation-delay: calc(var(--ah-draw-duration) * 0.3);
+            animation-timing-function: cubic-bezier(0.33, 0.9, 0.4, 1);
+        }
+
+        // Only the one-shot draw may stretch the strokes to different lengths.
+        // While looping they have to share a cycle, or the two would drift out
+        // of phase a little further on every repeat.
+        &:not(.is-looping) {
+            b:not([hidden]) svg path:nth-of-type(1) {
+                animation-duration: calc(var(--ah-draw-duration) * 0.8);
+            }
+
+            b:not([hidden]) svg path:nth-of-type(2) {
+                animation-duration: calc(var(--ah-draw-duration) * 1.35);
+            }
+        }
+    }
+
     // The four crop marks land almost together instead of in a slow sequence.
     &[shape="corner-ticks"] {
         --ah-draw-duration: 0.75s;
