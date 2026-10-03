@@ -72,8 +72,8 @@ A single `<b>` loops the drawing; several of them rotate as usual and the marker
 is redrawn for every phrase.
 
 Available shapes: `underline`, `double-underline`, `scribble`, `circle`,
-`zigzag`, `strikethrough`, `cross-out`, `diagonal`, `box`, `brackets`, `arc`,
-`wave`, `marker`, `corner-ticks`.
+`zigzag`, `sawtooth`, `strikethrough`, `cross-out`, `diagonal`, `box`,
+`brackets`, `arc`, `wave`, `marker`, `corner-ticks`.
 
 Everything is themed with custom properties, so no build step is needed to
 restyle it:

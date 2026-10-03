@@ -42,7 +42,13 @@ export const HIGHLIGHT_SHAPES: Record<string, string[]> = {
     circle: [
         'M268 14 C150 10 30 36 20 74 C12 108 110 136 244 140 C372 144 482 118 484 80 C486 44 384 16 252 14 C214 14 182 18 152 26',
     ],
+    // One continuous pen stroke that sweeps right, doubles back and sweeps
+    // again, the way an underline gets scrubbed in by hand.
     zigzag: [
+        'M10 126 C140 118 320 116 492 122 C370 130 180 132 26 140 C160 136 330 136 480 140 C420 145 360 147 300 148',
+    ],
+    // The hard-edged variant, for when the sketchy one is too loose.
+    sawtooth: [
         'M10 136 L48 116 L86 136 L124 116 L162 136 L200 116 L238 136 L276 116 L314 136 L352 116 L390 136 L428 116 L466 136 L490 124',
     ],
     strikethrough: [
