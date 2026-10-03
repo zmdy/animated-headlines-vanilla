@@ -12,10 +12,14 @@
     --ah-highlight-bleed-y: 0.3em;
     --ah-draw-duration: 1.1s;
     --ah-draw-hold: 1.9s;
-    // A smooth, symmetric in-out (easeInOutCubic). The plain `ease-in-out`
-    // keyword leaves too much speed in the middle of the stroke, which is what
-    // made the pen look like it was snapping across the word.
-    --ah-draw-ease: cubic-bezier(0.65, 0, 0.35, 1);
+    // A pen travels at a steady speed, so the stroke is drawn linearly. Easing
+    // the line itself is what made it read as mechanical - accelerating into
+    // the middle and then having to stop. The softness belongs at the end of
+    // the cycle instead, where the ink fades out through a blur.
+    --ah-draw-ease: linear;
+    // easeInOutSine, for the things that scale rather than draw (the marker).
+    --ah-sweep-ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    --ah-fade-blur: 3px;
 
     b {
         position: relative;
@@ -95,7 +99,7 @@
         // keeps its own looping animation); wiping the word away over and over
         // would be no good for a headline that never changes.
         b:not([hidden]) {
-            animation: ah-marker-sweep var(--ah-draw-duration) var(--ah-draw-ease) both;
+            animation: ah-marker-sweep var(--ah-draw-duration) var(--ah-sweep-ease) both;
         }
     }
 
@@ -108,7 +112,6 @@
         // looser curve, so the pair never moves in lockstep.
         b:not([hidden]) svg path:nth-of-type(2) {
             animation-delay: calc(var(--ah-draw-duration) * 0.3);
-            animation-timing-function: cubic-bezier(0.33, 0.9, 0.4, 1);
         }
 
         // Only the one-shot draw may stretch the strokes to different lengths.
@@ -159,13 +162,19 @@
 
     // The short opacity ramp is the pen touching down: without it the stroke
     // pops in at full weight on the first frame.
+    // Two keyframes and nothing in between. A timing function is applied to
+    // every keyframe interval separately, so an extra stop partway through the
+    // stroke restarts the easing there and puts a kink in the motion. The
+    // stroke also needs no fade to arrive gently: at dashoffset 100 there is
+    // nothing on screen yet to pop in.
     @keyframes ah-highlight-draw {
         0% {
             stroke-dashoffset: 100;
             opacity: 0;
         }
 
-        12% {
+        8% {
+            stroke-dashoffset: 98;
             opacity: 1;
         }
 
@@ -185,29 +194,42 @@
         }
     }
 
+    // A timing function declared inside a keyframe governs the segment that
+    // starts there, which is how each phase gets its own curve: the stroke
+    // eases, the hold is flat, and the dissolve runs long and gentle instead
+    // of inheriting the stroke's curve and blinking out.
+    // The soft ending is the dissolve, not a decelerating pen: the ink is drawn
+    // at a steady speed, holds, then goes out through a blur the way Aurora's
+    // headline does.
     @keyframes ah-highlight-loop {
         0% {
             stroke-dashoffset: 100;
             opacity: 0;
+            filter: blur(0);
         }
 
-        6% {
+        4% {
+            stroke-dashoffset: 98;
             opacity: 1;
+            filter: blur(0);
         }
 
         45% {
             stroke-dashoffset: 0;
             opacity: 1;
+            filter: blur(0);
         }
 
-        82% {
+        86% {
             stroke-dashoffset: 0;
             opacity: 1;
+            filter: blur(0);
         }
 
         100% {
             stroke-dashoffset: 0;
             opacity: 0;
+            filter: blur(var(--ah-fade-blur));
         }
     }
 }
