@@ -12,6 +12,10 @@
     --ah-highlight-bleed-y: 0.3em;
     --ah-draw-duration: 1.1s;
     --ah-draw-hold: 1.9s;
+    // A smooth, symmetric in-out (easeInOutCubic). The plain `ease-in-out`
+    // keyword leaves too much speed in the middle of the stroke, which is what
+    // made the pen look like it was snapping across the word.
+    --ah-draw-ease: cubic-bezier(0.65, 0, 0.35, 1);
 
     b {
         position: relative;
@@ -46,7 +50,7 @@
     // Draw the marker whenever the word it belongs to is the visible one, so a
     // rotating headline redraws the annotation for every phrase.
     b:not([hidden]) svg path {
-        animation: ah-highlight-draw var(--ah-draw-duration) ease-in-out both;
+        animation: ah-highlight-draw var(--ah-draw-duration) var(--ah-draw-ease) both;
     }
 
     // Multi-stroke shapes are drawn one stroke after the other.
@@ -65,7 +69,7 @@
     // A single phrase has nothing to rotate to, so the drawing itself loops:
     // draw, hold, fade out, start over.
     &.is-looping b:not([hidden]) svg path {
-        animation: ah-highlight-loop calc(var(--ah-draw-duration) + var(--ah-draw-hold)) ease-in-out infinite both;
+        animation: ah-highlight-loop calc(var(--ah-draw-duration) + var(--ah-draw-hold)) var(--ah-draw-ease) infinite both;
     }
 
     // The highlighter pen reads as ink, not as a line: blunt, thick, behind the
@@ -135,19 +139,31 @@
         }
     }
 
+    // The short opacity ramp is the pen touching down: without it the stroke
+    // pops in at full weight on the first frame.
     @keyframes ah-highlight-draw {
-        from {
+        0% {
             stroke-dashoffset: 100;
+            opacity: 0;
         }
 
-        to {
+        12% {
+            opacity: 1;
+        }
+
+        100% {
             stroke-dashoffset: 0;
+            opacity: 1;
         }
     }
 
     @keyframes ah-highlight-loop {
         0% {
             stroke-dashoffset: 100;
+            opacity: 0;
+        }
+
+        6% {
             opacity: 1;
         }
 
@@ -156,7 +172,7 @@
             opacity: 1;
         }
 
-        85% {
+        82% {
             stroke-dashoffset: 0;
             opacity: 1;
         }

@@ -83,6 +83,7 @@ restyle it:
 | `--ah-highlight-color`     | `#e63946` | Ink colour                                |
 | `--ah-highlight-width`     | `7px`     | Pen width (kept even as the box stretches) |
 | `--ah-draw-duration`       | `1.1s`    | How long one stroke takes to draw          |
+| `--ah-draw-ease`           | `cubic-bezier(.65, 0, .35, 1)` | Easing of the stroke      |
 | `--ah-draw-hold`           | `1.9s`    | Hold before a looping drawing restarts     |
 | `--ah-highlight-bleed-x/y` | `0.35em` / `0.3em` | How far the drawing overshoots the word |
 

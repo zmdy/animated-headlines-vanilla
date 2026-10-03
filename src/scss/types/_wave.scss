@@ -42,12 +42,12 @@
     @keyframes ah-wave-up {
         0% {
             opacity: 0;
-            transform: translateY(0.6em) scale(0.85);
+            transform: translateY(0.45em) scale(0.9);
         }
 
         55% {
             opacity: 1;
-            transform: translateY(-0.22em) scale(1.04);
+            transform: translateY(-0.16em) scale(1.02);
         }
 
         100% {
