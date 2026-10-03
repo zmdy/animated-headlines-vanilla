@@ -1,0 +1,36 @@
+// Highlighter ink that opens and closes with the clip caret. Layered on top of
+// the clip + clip-caret styles, so it only describes the ink itself.
+//
+// The reveal here is the element's width animating, so the stroke is simply
+// drawn in full and let the clip do the work - running the dash animation as
+// well would be a second, competing wipe.
+
+@mixin styles() {
+    --ah-marker-color: #ffd166;
+    --ah-marker-width: 42px;
+
+    b {
+        position: relative;
+    }
+
+    svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(100% + 0.7em);
+        height: calc(100% + 0.6em);
+        transform: translate(-50%, -50%);
+        overflow: visible;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    svg path {
+        fill: none;
+        stroke: var(--ah-marker-color);
+        stroke-width: var(--ah-marker-width);
+        stroke-linecap: butt;
+        vector-effect: non-scaling-stroke;
+        opacity: 0.55;
+    }
+}

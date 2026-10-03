@@ -13,6 +13,7 @@ import './words';
 import './clip';
 import './clip-caret';
 import './highlight';
+import './marker-caret';
 import './loading-bar';
 import './type';
 import './type-delete';
@@ -25,6 +26,7 @@ export enum AnimationType {
     Glitch = 'glitch',
     Highlight = 'highlight',
     LoadingBar = 'loading-bar',
+    MarkerCaret = 'marker-caret',
     Push = 'push',
     Rotate1 = 'rotate-1',
     Rotate2 = 'rotate-2',
@@ -52,6 +54,9 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
             break;
         case AnimationType.Highlight:
             element = document.createElement('via-animated-highlight-headline');
+            break;
+        case AnimationType.MarkerCaret:
+            element = document.createElement('via-animated-marker-caret-headline');
             break;
         case AnimationType.Push:
         case AnimationType.Slide:

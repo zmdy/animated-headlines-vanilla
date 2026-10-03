@@ -87,6 +87,41 @@ export const HIGHLIGHT_SHAPES: Record<string, string[]> = {
 
 export const DEFAULT_SHAPE = 'underline';
 
+/**
+ * Draws a shape into a phrase, unless the author already supplied their own
+ * SVG. Shared with the components that pair a marker with another reveal.
+ */
+export function drawShapeInto(word: HTMLElement, shapeName: string): void {
+    const shape = HIGHLIGHT_SHAPES[shapeName];
+
+    if (shape === undefined) {
+        console.warn(
+            'unknown highlight shape "' + shapeName + '" (must be one of ' + Object.keys(HIGHLIGHT_SHAPES) + ')'
+        );
+
+        return;
+    }
+
+    if (word.querySelector('svg') !== null) {
+        return;
+    }
+
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('viewBox', VIEW_BOX);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+
+    shape.forEach(definition => {
+        const path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', definition);
+        path.setAttribute('pathLength', '100');
+        svg.appendChild(path);
+    });
+
+    word.appendChild(svg);
+}
+
 export default class AnimatedHighlightElement extends AnimatedWordsElement {
     protected readonly loopingClassName = 'is-looping';
 
@@ -113,42 +148,12 @@ export default class AnimatedHighlightElement extends AnimatedWordsElement {
 
     private decorateWords(): void {
         const shapeName = this.getAttribute('shape') ?? DEFAULT_SHAPE;
-        const shape = HIGHLIGHT_SHAPES[shapeName];
-
-        if (shape === undefined) {
-            console.warn(
-                'unknown highlight shape "' + shapeName + '" (must be one of ' + Object.keys(HIGHLIGHT_SHAPES) + ')'
-            );
-
-            return;
-        }
 
         if (this.isSinglePhrase()) {
             this.classList.add(this.loopingClassName);
         }
 
-        this.querySelectorAll(this.wordSelector).forEach(word => this.drawShape(word as HTMLElement, shape));
-    }
-
-    private drawShape(word: HTMLElement, shape: string[]): void {
-        if (word.querySelector('svg') !== null) {
-            return; // the author supplied their own drawing
-        }
-
-        const svg = document.createElementNS(SVG_NS, 'svg');
-        svg.setAttribute('viewBox', VIEW_BOX);
-        svg.setAttribute('preserveAspectRatio', 'none');
-        svg.setAttribute('aria-hidden', 'true');
-        svg.setAttribute('focusable', 'false');
-
-        shape.forEach(definition => {
-            const path = document.createElementNS(SVG_NS, 'path');
-            path.setAttribute('d', definition);
-            path.setAttribute('pathLength', '100');
-            svg.appendChild(path);
-        });
-
-        word.appendChild(svg);
+        this.querySelectorAll(this.wordSelector).forEach(word => drawShapeInto(word as HTMLElement, shapeName));
     }
 }
 customElements.define('via-animated-highlight-headline', AnimatedHighlightElement);
