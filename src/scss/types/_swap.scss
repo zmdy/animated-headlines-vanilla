@@ -1,0 +1,146 @@
+// Swap: the phrase changes one letter at a time. Each letter that differs
+// rolls out while its replacement rolls in (swap.ts builds the cells and times
+// them left to right).
+//
+// Two motions, picked with the `motion` attribute:
+//   roll (default) - through a masked window, like a one-line ticker
+//   drum           - over a small 3D drum, like a departure-board flap
+//
+// The plain `<b>` phrases stay in the markup as the text source. They are laid
+// out invisibly, so the host can take the width of the longest one, and they
+// are what shows when motion is reduced or the page is printed.
+
+@mixin styles() {
+    --ah-swap-duration: 420ms;
+    --ah-swap-depth: 0.55em;
+
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    white-space: nowrap;
+
+    b:not([hidden]) {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: inline-block;
+        visibility: hidden;
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .ah-board {
+        display: inline-block;
+        white-space: pre;
+    }
+
+    .ah-cell {
+        position: relative;
+        display: inline-block;
+        white-space: pre;
+        transition: width var(--ah-swap-duration) cubic-bezier(0.7, 0, 0.2, 1);
+        // a window the height of the line; wide open sideways, so a letter
+        // that is wider than its cell is not cut off while the cell resizes
+        clip-path: inset(-0.04em -1em);
+    }
+
+    .ah-face {
+        display: inline-block;
+        white-space: pre;
+
+        &.is-in {
+            animation: ah-swap-roll-in var(--ah-swap-duration) cubic-bezier(0.7, 0, 0.2, 1) both;
+        }
+
+        &.is-out {
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: ah-swap-roll-out var(--ah-swap-duration) cubic-bezier(0.7, 0, 0.2, 1) both;
+        }
+    }
+
+    &[motion="drum"] {
+        .ah-cell {
+            clip-path: none;
+        }
+
+        .ah-face {
+            backface-visibility: hidden;
+            transform-origin: 50% 50% calc(var(--ah-swap-depth) * -1);
+
+            &.is-in {
+                animation-name: ah-swap-drum-in;
+                animation-timing-function: cubic-bezier(0.25, 1, 0.4, 1);
+            }
+
+            &.is-out {
+                animation-name: ah-swap-drum-out;
+                animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.4);
+            }
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce), print {
+        .ah-board {
+            display: none;
+        }
+
+        b:not([hidden]) {
+            position: static;
+            visibility: visible;
+        }
+    }
+
+    @keyframes ah-swap-roll-in {
+        0% {
+            transform: translateY(115%);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes ah-swap-roll-out {
+        0% {
+            transform: translateY(0);
+        }
+
+        100% {
+            transform: translateY(-115%);
+        }
+    }
+
+    @keyframes ah-swap-drum-in {
+        0% {
+            opacity: 0;
+            transform: perspective(500px) rotateX(-95deg);
+        }
+
+        30% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 1;
+            transform: perspective(500px) rotateX(0deg);
+        }
+    }
+
+    @keyframes ah-swap-drum-out {
+        0% {
+            opacity: 1;
+            transform: perspective(500px) rotateX(0deg);
+        }
+
+        70% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+            transform: perspective(500px) rotateX(95deg);
+        }
+    }
+}

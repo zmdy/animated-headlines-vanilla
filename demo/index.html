@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="./dist/animated-headline.css?v=20261005">
+    <link rel="stylesheet" href="./dist/animated-headline.css?v=20261007">
 
     <title>Animated Headlines Demo</title>
 </head>
@@ -367,12 +367,37 @@
         </h1>
     </section>
 
+    <!-- Swap -->
+    <section class="intro">
+        <h2 class="animation-type">Swap <small>(new)</small></h2>
+        <h1 class="ah-headline">
+            My favorite food is
+            <via-animated-headline animation="swap" hold="2800" delay="140">
+                <b>pizza</b>
+                <b hidden>sushi</b>
+                <b hidden>steak</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
+    <section class="intro">
+        <h2 class="animation-type">Swap, drum motion <small>(new)</small></h2>
+        <h1 class="ah-headline">
+            My favorite food is
+            <via-animated-headline animation="swap" motion="drum" hold="2800" delay="140">
+                <b>pizza</b>
+                <b hidden>sushi</b>
+                <b hidden>steak</b>
+            </via-animated-headline>
+        </h1>
+    </section>
+
     <!-- Counters -->
     <section class="intro">
         <h2 class="animation-type">Counters <small>(new)</small></h2>
         <p><a href="counters.html">Clock, countdown, timecode and progress &rarr;</a></p>
     </section>
 
-    <script src="./dist/animated-headline.js?v=20261005" type="module"></script>
+    <script src="./dist/animated-headline.js?v=20261007" type="module"></script>
 </body>
 </html>

@@ -129,6 +129,10 @@ via-animated-highlight-headline {
     @include types.highlight-styles;
 }
 
+via-animated-swap-headline {
+    @include types.swap-styles;
+}
+
 via-animated-flipboard-headline {
     @include types.flipboard-styles;
 }

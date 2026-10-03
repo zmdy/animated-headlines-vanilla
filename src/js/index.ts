@@ -21,6 +21,7 @@ import './type-delete';
 import './stagger';
 import './mirror';
 import './flipboard';
+import './swap';
 import './clock';
 import './countdown';
 import './timecode';
@@ -49,6 +50,7 @@ export enum AnimationType {
     Shuffle = 'shuffle',
     Slide = 'slide',
     Sparkle = 'sparkle',
+    Swap = 'swap',
     Type = 'type',
     TypeDelete = 'type-delete',
     Wave = 'wave',
@@ -76,6 +78,9 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
             break;
         case AnimationType.Sparkle:
             element = document.createElement('via-animated-sparkle-headline');
+            break;
+        case AnimationType.Swap:
+            element = document.createElement('via-animated-swap-headline');
             break;
         case AnimationType.Flipboard:
             element = document.createElement('via-animated-flipboard-headline');

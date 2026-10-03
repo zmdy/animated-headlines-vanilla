@@ -1,4 +1,4 @@
-const h = (a, e, t, s = !1) => a.dispatchEvent(new CustomEvent(`via-animated-headline:${e}`, { bubbles: !0, cancelable: s, detail: t })), p = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const h = (a, e, t, s = !1) => a.dispatchEvent(new CustomEvent(`via-animated-headline:${e}`, { bubbles: !0, cancelable: s, detail: t })), f = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function N(a, e, t) {
   let s = performance.now();
   requestAnimationFrame(function i(n) {
@@ -79,7 +79,7 @@ class c extends HTMLElement {
   }
 }
 customElements.define("via-animated-words-headline", c);
-class f extends c {
+class b extends c {
   lettersDelay = 50;
   letterClassName = "letter";
   connectedCallback() {
@@ -115,7 +115,7 @@ class f extends c {
     }), e.innerHTML = t.map((s) => s.outerHTML).join(""), e.style.opacity = "1";
   }
 }
-customElements.define("via-animated-letters-headline", f);
+customElements.define("via-animated-letters-headline", b);
 class k extends c {
   revealDelay = 600;
   connectedCallback() {
@@ -260,21 +260,21 @@ class W extends c {
 }
 customElements.define("via-animated-highlight-headline", W);
 const F = "marker";
-class I extends w {
+class q extends w {
   connectedCallback() {
     const e = this.getAttribute("shape") ?? F;
     this.querySelectorAll(this.wordSelector).forEach((t) => L(t, e)), super.connectedCallback();
   }
 }
-customElements.define("via-animated-marker-caret-headline", I);
-const x = "http://www.w3.org/2000/svg", q = "M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z", H = 7;
-function m(a, e) {
+customElements.define("via-animated-marker-caret-headline", q);
+const y = "http://www.w3.org/2000/svg", I = "M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z", O = 7;
+function u(a, e) {
   return a + Math.random() * (e - a);
 }
 class P extends c {
   sparkleClassName = "sparkle";
   connectedCallback() {
-    const e = this.hasAttribute("sparkles") ? parseInt(this.getAttribute("sparkles")) : H;
+    const e = this.hasAttribute("sparkles") ? parseInt(this.getAttribute("sparkles")) : O;
     this.querySelectorAll(this.wordSelector).forEach((t) => this.scatter(t, e)), super.connectedCallback();
   }
   scatter(e, t) {
@@ -283,16 +283,16 @@ class P extends c {
         e.appendChild(this.sparkle(s, t));
   }
   sparkle(e, t) {
-    const s = document.createElementNS(x, "svg");
+    const s = document.createElementNS(y, "svg");
     s.setAttribute("viewBox", "0 0 24 24"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), s.setAttribute("class", this.sparkleClassName);
-    const i = m(9, 19), n = (e + m(0.15, 0.85)) / t;
-    s.style.setProperty("--sparkle-size", i.toFixed(1) + "px"), s.style.setProperty("--sparkle-x", (n * 100).toFixed(1) + "%"), s.style.setProperty("--sparkle-y", m(-22, 92).toFixed(1) + "%"), s.style.setProperty("--sparkle-delay", m(0, 1.6).toFixed(2) + "s"), s.style.setProperty("--sparkle-duration", m(1.1, 2.1).toFixed(2) + "s"), s.style.setProperty("--sparkle-turn", m(-40, 40).toFixed(0) + "deg");
-    const r = document.createElementNS(x, "path");
-    return r.setAttribute("d", q), s.appendChild(r), s;
+    const i = u(9, 19), n = (e + u(0.15, 0.85)) / t;
+    s.style.setProperty("--sparkle-size", i.toFixed(1) + "px"), s.style.setProperty("--sparkle-x", (n * 100).toFixed(1) + "%"), s.style.setProperty("--sparkle-y", u(-22, 92).toFixed(1) + "%"), s.style.setProperty("--sparkle-delay", u(0, 1.6).toFixed(2) + "s"), s.style.setProperty("--sparkle-duration", u(1.1, 2.1).toFixed(2) + "s"), s.style.setProperty("--sparkle-turn", u(-40, 40).toFixed(0) + "deg");
+    const r = document.createElementNS(y, "path");
+    return r.setAttribute("d", I), s.appendChild(r), s;
   }
 }
 customElements.define("via-animated-sparkle-headline", P);
-class O extends c {
+class H extends c {
   #e = "is-loading";
   barDelay = 500;
   connectedCallback() {
@@ -302,8 +302,8 @@ class O extends c {
     super.next(e), e = e ?? this.current(), e !== null && (e.parentNode.classList.remove(this.#e), this.runAfter(this.barDelay, () => e.parentNode.classList.add(this.#e)));
   }
 }
-customElements.define("via-animated-loading-headline", O);
-class T extends f {
+customElements.define("via-animated-loading-headline", H);
+class T extends b {
   #e = "waiting";
   #t = "selected";
   selectionDuration = 500;
@@ -329,7 +329,7 @@ class T extends f {
   }
 }
 customElements.define("via-animated-type-headline", T);
-class R extends f {
+class R extends b {
   waitingClassName = "waiting";
   /** Backspacing is quicker than typing, the way it is for a real typist. */
   eraseDelay = 40;
@@ -372,8 +372,8 @@ class R extends f {
   }
 }
 customElements.define("via-animated-type-delete-headline", R);
-const z = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&@*?", _ = 900;
-class B extends f {
+const z = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&@*?", B = 900;
+class _ extends b {
   steps = 7;
   tickDuration = 45;
   charset = z;
@@ -390,14 +390,14 @@ class B extends f {
    */
   markLeaving(e) {
     const t = e.querySelectorAll("." + this.letterClassName).length;
-    e.classList.add(this.leavingClassName), window.setTimeout(() => e.classList.remove(this.leavingClassName), t * this.lettersDelay + _);
+    e.classList.add(this.leavingClassName), window.setTimeout(() => e.classList.remove(this.leavingClassName), t * this.lettersDelay + B);
   }
   hideOrShowLetter(e, t, s = !0, i = !1) {
     super.hideOrShowLetter(e, t, s, i), !i && this.getAttribute("animation") === "shuffle" && this.shuffle(e);
   }
   shuffle(e) {
     const t = e.dataset.char;
-    !t || t.trim() === "" || p() || requestAnimationFrame(() => {
+    !t || t.trim() === "" || f() || requestAnimationFrame(() => {
       e.style.width = e.getBoundingClientRect().width + "px", e.classList.add("is-shuffling");
       const s = this.steps + Math.floor(Math.random() * 3);
       let i = 0;
@@ -412,7 +412,7 @@ class B extends f {
     });
   }
 }
-customElements.define("via-animated-stagger-headline", B);
+customElements.define("via-animated-stagger-headline", _);
 class V extends c {
   connectedCallback() {
     this.querySelectorAll(this.wordSelector).forEach((e) => {
@@ -421,7 +421,7 @@ class V extends c {
   }
 }
 customElements.define("via-animated-mirror-headline", V);
-const U = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", u = "perspective(420px) ", j = (a) => new Promise((e) => window.setTimeout(e, a));
+const U = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", p = "perspective(420px) ", j = (a) => new Promise((e) => window.setTimeout(e, a));
 function d(a, e) {
   a.firstElementChild.textContent = e;
 }
@@ -457,10 +457,10 @@ class Q extends c {
   }
   makeTile() {
     const e = (l) => {
-      const b = document.createElement("span");
-      b.className = "ah-half " + l;
+      const m = document.createElement("span");
+      m.className = "ah-half " + l;
       const E = document.createElement("span");
-      return E.className = "ah-glyph", b.appendChild(E), b;
+      return E.className = "ah-glyph", m.appendChild(E), m;
     }, t = document.createElement("span");
     t.className = "ah-tile";
     const s = e("ah-top"), i = e("ah-bottom"), n = e("ah-top ah-flap"), r = e("ah-bottom ah-flap");
@@ -519,10 +519,10 @@ class Q extends c {
     const i = Math.max(1, this.speed / 2);
     e.animations.forEach((l) => l.cancel());
     const n = e.flapTop.animate(
-      [{ transform: u + "rotateX(0deg)" }, { transform: u + "rotateX(-90deg)" }],
+      [{ transform: p + "rotateX(0deg)" }, { transform: p + "rotateX(-90deg)" }],
       { duration: i, easing: "ease-in", fill: "forwards" }
     ), r = e.flapBottom.animate(
-      [{ transform: u + "rotateX(90deg)" }, { transform: u + "rotateX(0deg)" }],
+      [{ transform: p + "rotateX(90deg)" }, { transform: p + "rotateX(0deg)" }],
       { duration: i, delay: i, easing: "ease-out", fill: "both" }
     );
     e.animations = [n, r];
@@ -535,7 +535,60 @@ class Q extends c {
   }
 }
 customElements.define("via-animated-flipboard-headline", Q);
-const X = 700;
+class X extends c {
+  cells = [];
+  duration = 420;
+  stagger = 140;
+  connectedCallback() {
+    this.duration = this.hasAttribute("speed") ? parseInt(this.getAttribute("speed")) : this.duration, this.stagger = this.hasAttribute("delay") ? parseInt(this.getAttribute("delay")) : this.stagger, this.style.setProperty("--ah-swap-duration", this.duration + "ms"), this.build(), super.connectedCallback();
+  }
+  switchWord(e, t) {
+    this.makeHidden(e), this.makeVisible(t), this.show(this.phraseOf(t)), this.setAttribute("aria-label", this.phraseOf(t)), h(this, "word-replaced", { old: e, new: t });
+  }
+  phraseOf(e) {
+    return (e.textContent ?? "").trim().replace(/\s+/g, " ");
+  }
+  build() {
+    this.querySelector(".ah-board")?.remove();
+    const e = Array.from(this.querySelectorAll(this.wordSelector)), t = Math.max(1, ...e.map((r) => this.phraseOf(r).length)), s = this.current(), i = s === null ? "" : this.phraseOf(s), n = document.createElement("span");
+    n.className = "ah-board", n.setAttribute("aria-hidden", "true"), this.cells = [];
+    for (let r = 0; r < t; r++) {
+      const l = document.createElement("span");
+      l.className = "ah-cell", l.appendChild(this.face(i.charAt(r), !1)), n.appendChild(l), this.cells.push({ root: l, shown: i.charAt(r), token: 0 });
+    }
+    this.prepend(n), this.setAttribute("role", "img"), this.setAttribute("aria-label", i);
+  }
+  face(e, t) {
+    const s = document.createElement("span");
+    return s.className = "ah-face" + (t ? " is-in" : ""), s.textContent = e, s;
+  }
+  show(e) {
+    let t = 0;
+    this.cells.forEach((s, i) => {
+      const n = e.charAt(i);
+      if (n === s.shown) {
+        s.token++;
+        return;
+      }
+      const r = ++s.token;
+      window.setTimeout(() => {
+        r === s.token && this.change(s, n);
+      }, t++ * this.stagger);
+    });
+  }
+  change(e, t) {
+    const s = e.root;
+    s.querySelectorAll(".ah-face.is-out").forEach((m) => m.remove());
+    const i = s.querySelector(".ah-face"), n = s.getBoundingClientRect().width, r = this.face(t, !0);
+    i.classList.remove("is-in"), i.classList.add("is-out"), s.appendChild(r);
+    const l = r.getBoundingClientRect().width;
+    s.style.width = n + "px", s.offsetWidth, s.style.width = l + "px", e.shown = t, window.setTimeout(() => {
+      i.remove(), s.querySelector(".ah-face.is-out") === null && s.style.removeProperty("width");
+    }, this.duration + 40);
+  }
+}
+customElements.define("via-animated-swap-headline", X);
+const $ = 700;
 function o(a, e = 2) {
   return String(Math.max(0, Math.floor(a))).padStart(e, "0");
 }
@@ -576,7 +629,7 @@ class C extends HTMLElement {
     if (s.length !== this.shown.length)
       this.rebuild(s);
     else {
-      const i = !p();
+      const i = !f();
       s.forEach((n, r) => {
         if (n === this.shown[r])
           return;
@@ -603,13 +656,13 @@ class C extends HTMLElement {
     const i = document.createElement("span");
     i.className = "ah-face is-in", i.textContent = t, e.textContent = "", e.append(s, i);
     const n = () => s.remove();
-    s.addEventListener("animationend", n, { once: !0 }), window.setTimeout(n, X);
+    s.addEventListener("animationend", n, { once: !0 }), window.setTimeout(n, $);
   }
   announce(e) {
     e = e.replace(/[:.\s]+$/, ""), e !== this.label && (this.label = e, this.setAttribute("aria-label", e));
   }
 }
-class $ extends C {
+class G extends C {
   static get observedAttributes() {
     return ["timezone", "format", "seconds"];
   }
@@ -639,8 +692,8 @@ class $ extends C {
     return this.flag("seconds", !0) && (i += ":" + t.second), this.getAttribute("format") === "12h" && (i += " " + t.dayPeriod), i;
   }
 }
-customElements.define("via-animated-clock", $);
-class G extends C {
+customElements.define("via-animated-clock", G);
+class Z extends C {
   static get observedAttributes() {
     return ["target", "format"];
   }
@@ -679,9 +732,9 @@ class G extends C {
     }
   }
 }
-customElements.define("via-animated-countdown", G);
-const y = 24 * 3600;
-class Z extends C {
+customElements.define("via-animated-countdown", Z);
+const x = 24 * 3600;
+class K extends C {
   static get observedAttributes() {
     return ["start", "fps", "format", "paused"];
   }
@@ -696,7 +749,7 @@ class Z extends C {
     this.end(), this.begin();
   }
   begin() {
-    this.fps = Math.max(1, Math.round(this.number("fps", 30))), this.base = this.parse(this.getAttribute("start") ?? ""), this.since = performance.now(), this.lastSecond = -1, this.render(), !this.hasAttribute("paused") && !p() && (this.frame = requestAnimationFrame(() => this.loop()));
+    this.fps = Math.max(1, Math.round(this.number("fps", 30))), this.base = this.parse(this.getAttribute("start") ?? ""), this.since = performance.now(), this.lastSecond = -1, this.render(), !this.hasAttribute("paused") && !f() && (this.frame = requestAnimationFrame(() => this.loop()));
   }
   end() {
     super.end(), cancelAnimationFrame(this.frame), this.frame = void 0;
@@ -714,7 +767,7 @@ class Z extends C {
     return this.base + Math.floor(e);
   }
   render() {
-    const e = this.frames(), t = Math.floor(e / this.fps) % y, s = this.getAttribute("format") !== "compact", i = [t / 3600, t / 60 % 60, t % 60].map((n) => o(n)).join(":");
+    const e = this.frames(), t = Math.floor(e / this.fps) % x, s = this.getAttribute("format") !== "compact", i = [t / 3600, t / 60 % 60, t % 60].map((n) => o(n)).join(":");
     s ? this.display(i + ":" + o(e % this.fps), i.length) : this.display(i), t !== this.lastSecond && (this.lastSecond = t, h(this, "tick", { second: t }));
   }
   /** "HH:MM:SS:FF" or "HH:MM:SS" to frames. */
@@ -723,12 +776,12 @@ class Z extends C {
     if (t.length === 0)
       return 0;
     const [s = 0, i = 0, n = 0, r = 0] = t.length >= 4 ? t : [...t, ...Array(4 - t.length).fill(0)];
-    return ((s * 3600 + i * 60 + n) * this.fps + r) % (y * this.fps);
+    return ((s * 3600 + i * 60 + n) * this.fps + r) % (x * this.fps);
   }
 }
-customElements.define("via-animated-timecode", Z);
-const K = (a) => 1 - Math.pow(1 - a, 3);
-class Y extends HTMLElement {
+customElements.define("via-animated-timecode", K);
+const Y = (a) => 1 - Math.pow(1 - a, 3);
+class J extends HTMLElement {
   static get observedAttributes() {
     return ["from", "to", "decimals", "prefix", "suffix", "locale", "bar"];
   }
@@ -773,11 +826,11 @@ class Y extends HTMLElement {
   run(e, t) {
     cancelAnimationFrame(this.frame), this.classList.remove("is-landed");
     const s = Math.max(0, this.number("duration", 1800));
-    if (p() || s === 0 || e === t)
+    if (f() || s === 0 || e === t)
       return this.land(t);
     const i = performance.now(), n = (r) => {
       const l = Math.min(1, (r - i) / s);
-      this.paint(e + (t - e) * K(l)), l < 1 ? this.frame = requestAnimationFrame(n) : this.land(t);
+      this.paint(e + (t - e) * Y(l)), l < 1 ? this.frame = requestAnimationFrame(n) : this.land(t);
     };
     this.frame = requestAnimationFrame(n);
   }
@@ -802,9 +855,9 @@ class Y extends HTMLElement {
     }
   }
 }
-customElements.define("via-animated-progress", Y);
-var S = /* @__PURE__ */ ((a) => (a.Blur = "blur", a.Bounce = "bounce", a.Clip = "clip", a.ClipCaret = "clip-caret", a.Flipboard = "flipboard", a.Glitch = "glitch", a.Highlight = "highlight", a.LoadingBar = "loading-bar", a.MarkerCaret = "marker-caret", a.Mirror = "mirror", a.Pop = "pop", a.Push = "push", a.Rise = "rise", a.Roll = "roll", a.Rolling = "rolling", a.Rotate1 = "rotate-1", a.Rotate2 = "rotate-2", a.Rotate3 = "rotate-3", a.Scale = "scale", a.Shuffle = "shuffle", a.Slide = "slide", a.Sparkle = "sparkle", a.Type = "type", a.TypeDelete = "type-delete", a.Wave = "wave", a.Zoom = "zoom", a))(S || {});
-function J(a, e) {
+customElements.define("via-animated-progress", J);
+var S = /* @__PURE__ */ ((a) => (a.Blur = "blur", a.Bounce = "bounce", a.Clip = "clip", a.ClipCaret = "clip-caret", a.Flipboard = "flipboard", a.Glitch = "glitch", a.Highlight = "highlight", a.LoadingBar = "loading-bar", a.MarkerCaret = "marker-caret", a.Mirror = "mirror", a.Pop = "pop", a.Push = "push", a.Rise = "rise", a.Roll = "roll", a.Rolling = "rolling", a.Rotate1 = "rotate-1", a.Rotate2 = "rotate-2", a.Rotate3 = "rotate-3", a.Scale = "scale", a.Shuffle = "shuffle", a.Slide = "slide", a.Sparkle = "sparkle", a.Swap = "swap", a.Type = "type", a.TypeDelete = "type-delete", a.Wave = "wave", a.Zoom = "zoom", a))(S || {});
+function ee(a, e) {
   let t;
   switch (a) {
     case "clip":
@@ -824,6 +877,9 @@ function J(a, e) {
       break;
     case "sparkle":
       t = document.createElement("via-animated-sparkle-headline");
+      break;
+    case "swap":
+      t = document.createElement("via-animated-swap-headline");
       break;
     case "flipboard":
       t = document.createElement("via-animated-flipboard-headline");
@@ -864,7 +920,7 @@ function J(a, e) {
   }
   return Array.from(e).forEach((s) => t.setAttribute(s.name, s.value)), t;
 }
-class ee extends HTMLElement {
+class te extends HTMLElement {
   static get observedAttributes() {
     return ["animation", "hold", "delay", "shape"];
   }
@@ -875,15 +931,15 @@ class ee extends HTMLElement {
     this.render();
   }
   render() {
-    const e = this.getAttribute("animation"), t = J(e, this.attributes);
+    const e = this.getAttribute("animation"), t = ee(e, this.attributes);
     Array.from(this.children).forEach((s) => {
       s.tagName?.startsWith("VIA-ANIMATED-") ? s.childNodes.forEach((i) => t.appendChild(i.cloneNode(!0))) : t.appendChild(s.cloneNode(!0));
     }), this.innerHTML = "", this.appendChild(t);
   }
 }
-customElements.define("via-animated-headline", ee);
+customElements.define("via-animated-headline", te);
 var g = /* @__PURE__ */ ((a) => (a.Clock = "clock", a.Countdown = "countdown", a.Progress = "progress", a.Timecode = "timecode", a))(g || {});
-class te extends HTMLElement {
+class se extends HTMLElement {
   static get observedAttributes() {
     return ["animation"];
   }
@@ -901,7 +957,7 @@ class te extends HTMLElement {
     Array.from(this.attributes).forEach((s) => t.setAttribute(s.name, s.value)), this.innerHTML = "", this.appendChild(t);
   }
 }
-customElements.define("via-animated-counter", te);
+customElements.define("via-animated-counter", se);
 export {
   S as AnimationType,
   g as CounterType
@@ -1004,6 +1060,21 @@ export {
  * Every tile is four halves: the static top and bottom, and two flaps that
  * fold over the hinge. The folding is driven with the Web Animations API, one
  * flip per character step.
+ *
+ * @author Christoph Massmann <cm@vianetz.com>
+ * @license https://opensource.org/licenses/MIT MIT License
+ */
+/**!
+ * Plain Vanilla JavaScript Animated Headline Component
+ *
+ * Swap: the phrase changes one letter at a time. Like the flipboard, the old
+ * and the new phrase are compared position by position and only the letters
+ * that differ move - each rolls out and the new one rolls in, left to right.
+ *
+ * The motion is CSS (`motion="roll"` slides through a masked window,
+ * `motion="drum"` tips over a 3D drum); this class keeps the cells, hands out
+ * the stagger and animates the width as letters of different widths trade
+ * places.
  *
  * @author Christoph Massmann <cm@vianetz.com>
  * @license https://opensource.org/licenses/MIT MIT License
