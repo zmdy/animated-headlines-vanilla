@@ -20,6 +20,7 @@ import './type';
 import './type-delete';
 import './stagger';
 import './mirror';
+import './flipboard';
 import './clock';
 import './countdown';
 import './timecode';
@@ -30,6 +31,7 @@ export enum AnimationType {
     Bounce = 'bounce',
     Clip = 'clip',
     ClipCaret = 'clip-caret',
+    Flipboard = 'flipboard',
     Glitch = 'glitch',
     Highlight = 'highlight',
     LoadingBar = 'loading-bar',
@@ -74,6 +76,9 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
             break;
         case AnimationType.Sparkle:
             element = document.createElement('via-animated-sparkle-headline');
+            break;
+        case AnimationType.Flipboard:
+            element = document.createElement('via-animated-flipboard-headline');
             break;
         case AnimationType.Mirror:
             element = document.createElement('via-animated-mirror-headline');

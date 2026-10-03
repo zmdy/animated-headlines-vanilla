@@ -1,0 +1,116 @@
+// Flipboard: an airport split-flap board. flipboard.ts builds one tile per
+// character; a tile is a static top and bottom half plus two flaps that fold
+// over the hinge while it changes.
+//
+// The plain `<b>` phrases stay in the markup (hidden) as the text source, and
+// are what shows when motion is reduced or the page is printed.
+
+@mixin styles() {
+    --ah-flipboard-bg: #17181b;
+    --ah-flipboard-fg: #f4f4f0;
+    --ah-flipboard-split: #000;
+    --ah-flipboard-top-shade: 0.82; // the upper half sits slightly in shadow
+    --ah-flipboard-width: 0.74em;
+    --ah-flipboard-height: 1.18em;
+    --ah-flipboard-gap: 0.05em;
+
+    display: inline-block;
+    white-space: nowrap;
+
+    b {
+        display: none;
+    }
+
+    .ah-board {
+        display: inline-block;
+        white-space: nowrap;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--ah-flipboard-fg);
+    }
+
+    .ah-tile {
+        position: relative;
+        display: inline-block;
+        width: var(--ah-flipboard-width);
+        height: var(--ah-flipboard-height);
+        margin: 0 var(--ah-flipboard-gap);
+        vertical-align: -0.2em;
+        border-radius: 0.09em;
+
+        // the gap between the two halves, where the flaps hinge
+        &::after {
+            content: "";
+            position: absolute;
+            z-index: 3;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: max(1px, 0.03em);
+            margin-top: calc(max(1px, 0.03em) / -2);
+            background: var(--ah-flipboard-split);
+        }
+    }
+
+    .ah-half {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 50%;
+        overflow: hidden;
+        background: var(--ah-flipboard-bg);
+        backface-visibility: hidden;
+    }
+
+    .ah-top {
+        top: 0;
+        border-radius: 0.09em 0.09em 0 0;
+        transform-origin: 50% 100%;
+
+        .ah-glyph {
+            top: 0;
+            opacity: var(--ah-flipboard-top-shade);
+        }
+    }
+
+    .ah-bottom {
+        bottom: 0;
+        border-radius: 0 0 0.09em 0.09em;
+        transform-origin: 50% 0;
+
+        .ah-glyph {
+            top: -100%;
+        }
+    }
+
+    // A glyph is as tall as the whole tile; each half only shows its part.
+    .ah-glyph {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 200%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    // Flaps only exist while the tile changes.
+    .ah-flap {
+        display: none;
+        z-index: 2;
+    }
+
+    .ah-tile.is-flipping .ah-flap {
+        display: block;
+    }
+
+    @media (prefers-reduced-motion: reduce), print {
+        .ah-board {
+            display: none;
+        }
+
+        b:not([hidden]) {
+            display: inline-block;
+        }
+    }
+}

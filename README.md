@@ -44,7 +44,7 @@ The Animated Headlines component provides multiple attributes to customize diffe
 
 | Option      | Description                                                                                                                                                                        |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `type-delete`, `highlight`, `sparkle`, `marker-caret`, `rise`, `pop`, `roll`, `rolling`, `shuffle`, `mirror` |
+| `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `type-delete`, `highlight`, `sparkle`, `marker-caret`, `rise`, `pop`, `roll`, `rolling`, `shuffle`, `mirror`, `flipboard` |
 | `shape`     | Only for `animation="highlight"`: which marker to draw (see below). Defaults to `underline`                                                                                        |
 | `erase`     | Only for `animation="type-delete"`: milliseconds between backspaces. Defaults to 60% of `delay`                                   |
 | `steps`, `tick`, `charset` | Only for `animation="shuffle"`: how many random glyphs a letter cycles through (default 7), milliseconds per glyph (default 45), and the glyphs to draw from |
@@ -103,6 +103,7 @@ phrases like the others. Use `delay` to set the stagger between letters.
 | `roll`    | Letters roll through a masked line-height window: old one out the top, new one in from below  |                                            |
 | `rolling` | Letters tip over a 3D drum like a departure-board flap                                        | `--ah-rolling-depth`                       |
 | `shuffle` | Slot machine: each letter flickers through random glyphs before landing on the real one       | `--ah-shuffle-color`                       |
+| `flipboard` | Airport split-flap board: only the characters that differ flip, stepping through the alphabet left to right. `speed` (ms per flip, default 90), `delay` (ms between tiles, default 70), `steps` (max flips per tile, default 12), `charset` | `--ah-flipboard-bg/-fg/-split/-top-shade/-width/-height/-gap` |
 | `mirror`  | Two ghost copies close in from opposite sides and merge into the phrase                       | `--ah-mirror-a/b`, `--ah-mirror-spread`    |
 
 ## Counters

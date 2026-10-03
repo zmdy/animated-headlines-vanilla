@@ -1,11 +1,11 @@
-const l = (i, e, t, s = !1) => i.dispatchEvent(new CustomEvent(`via-animated-headline:${e}`, { bubbles: !0, cancelable: s, detail: t })), u = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function k(i, e, t) {
+const h = (a, e, t, s = !1) => a.dispatchEvent(new CustomEvent(`via-animated-headline:${e}`, { bubbles: !0, cancelable: s, detail: t })), p = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function N(a, e, t) {
   let s = performance.now();
-  requestAnimationFrame(function a(n) {
+  requestAnimationFrame(function i(n) {
     let r = (n - s) / t;
     r > 1 && (r = 1);
-    let h = i(r);
-    e(h), r < 1 && requestAnimationFrame(a);
+    let l = a(r);
+    e(l), r < 1 && requestAnimationFrame(i);
   });
 }
 class c extends HTMLElement {
@@ -14,7 +14,7 @@ class c extends HTMLElement {
   wordSelector = "b";
   leavingClassName = "is-leaving";
   connectedCallback() {
-    this.holdDelay = this.hasAttribute("hold") ? parseInt(this.getAttribute("hold")) : this.holdDelay, this.resize(), window.matchMedia("(prefers-reduced-motion: reduce)").matches || this.start(), l(this, "ready");
+    this.holdDelay = this.hasAttribute("hold") ? parseInt(this.getAttribute("hold")) : this.holdDelay, this.resize(), window.matchMedia("(prefers-reduced-motion: reduce)").matches || this.start(), h(this, "ready");
   }
   attributeChangedCallback() {
     this.resize();
@@ -22,17 +22,17 @@ class c extends HTMLElement {
   resize() {
     let e = 0;
     this.querySelectorAll(this.wordSelector).forEach(function(t) {
-      const s = t, a = s.hasAttribute("hidden");
-      a && (s.style.display = "inline-block", s.style.position = "absolute", s.style.visibility = "hidden", s.style.whiteSpace = "nowrap"), e = Math.max(s.offsetWidth, e), a && (s.style.removeProperty("display"), s.style.removeProperty("position"), s.style.removeProperty("visibility"), s.style.removeProperty("white-space"));
-    }), this.style.width = e + "px", l(this, "resized", { width: e.toString() });
+      const s = t, i = s.hasAttribute("hidden");
+      i && (s.style.display = "inline-block", s.style.position = "absolute", s.style.visibility = "hidden", s.style.whiteSpace = "nowrap"), e = Math.max(s.offsetWidth, e), i && (s.style.removeProperty("display"), s.style.removeProperty("position"), s.style.removeProperty("visibility"), s.style.removeProperty("white-space"));
+    }), this.style.width = e + "px", h(this, "resized", { width: e.toString() });
   }
   /** @api */
   start() {
-    this.#e = !1, this.runAfter(this.holdDelay, () => this.next()), l(this, "started");
+    this.#e = !1, this.runAfter(this.holdDelay, () => this.next()), h(this, "started");
   }
   /** @api */
   stop() {
-    this.#e = !0, l(this, "stopped");
+    this.#e = !0, h(this, "stopped");
   }
   /** @api */
   current() {
@@ -49,7 +49,7 @@ class c extends HTMLElement {
     return e.nextElementSibling ? e.nextElementSibling : e.parentNode.children[0];
   }
   switchWord(e, t) {
-    this.makeHidden(e), this.makeVisible(t), this.markLeaving(e), l(this, "word-replaced", { old: e, new: t });
+    this.makeHidden(e), this.makeVisible(t), this.markLeaving(e), h(this, "word-replaced", { old: e, new: t });
   }
   /**
    * A hidden element is `display: none`, so without this the exit half of
@@ -71,7 +71,7 @@ class c extends HTMLElement {
     e.setAttribute("hidden", "");
   }
   runAfter(e, t) {
-    k((s) => s, (s) => {
+    N((s) => s, (s) => {
       if (this.#e)
         throw "execution aborted";
       s === 1 && t();
@@ -79,7 +79,7 @@ class c extends HTMLElement {
   }
 }
 customElements.define("via-animated-words-headline", c);
-class m extends c {
+class f extends c {
   lettersDelay = 50;
   letterClassName = "letter";
   connectedCallback() {
@@ -97,17 +97,17 @@ class m extends c {
   showLetter(e, t, s) {
     this.hideOrShowLetter(e, t, s, !1);
   }
-  hideOrShowLetter(e, t, s = !0, a = !1) {
-    a ? this.makeHidden(e) : this.makeVisible(e), e.nextElementSibling ? this.runAfter(this.lettersDelay, () => this.hideOrShowLetter(e.nextElementSibling, t, s, a)) : s && this.runAfter(this.holdDelay, () => this.next(a ? this.getNextWord(t) : t));
+  hideOrShowLetter(e, t, s = !0, i = !1) {
+    i ? this.makeHidden(e) : this.makeVisible(e), e.nextElementSibling ? this.runAfter(this.lettersDelay, () => this.hideOrShowLetter(e.nextElementSibling, t, s, i)) : s && this.runAfter(this.holdDelay, () => this.next(i ? this.getNextWord(t) : t));
   }
   splitIntoSingleLetters(e) {
     const t = [];
     for (const s of e.childNodes)
       if (s.nodeType === Node.TEXT_NODE) {
-        const a = s.textContent.split("");
-        for (let n in a) {
+        const i = s.textContent.split("");
+        for (let n in i) {
           const r = document.createElement("span");
-          r.innerHTML = a[n], t.push(r);
+          r.innerHTML = i[n], t.push(r);
         }
       } else s.nodeType === Node.ELEMENT_NODE ? t.push(s) : console.warn("unsupported child node:", s);
     t.forEach((s) => {
@@ -115,8 +115,8 @@ class m extends c {
     }), e.innerHTML = t.map((s) => s.outerHTML).join(""), e.style.opacity = "1";
   }
 }
-customElements.define("via-animated-letters-headline", m);
-class v extends c {
+customElements.define("via-animated-letters-headline", f);
+class k extends c {
   revealDelay = 600;
   connectedCallback() {
     super.connectedCallback(), this.revealDelay = this.hasAttribute("delay") ? parseInt(this.getAttribute("delay")) : this.revealDelay;
@@ -133,13 +133,13 @@ class v extends c {
       return;
     const t = this.getNextWord(e);
     let s = e.parentNode.animate([{ width: e.offsetWidth + "px" }, { width: "2px" }], { duration: this.revealDelay });
-    s.onfinish = (a) => {
+    s.onfinish = (i) => {
       this.switchWord(e, t), this.showWord(t);
     };
   }
 }
-customElements.define("via-animated-clip-headline", v);
-class A extends v {
+customElements.define("via-animated-clip-headline", k);
+class w extends k {
   waitingClassName = "waiting";
   showWord(e) {
     const t = this.animate(
@@ -154,8 +154,8 @@ class A extends v {
     this.classList.remove(this.waitingClassName), super.next(e);
   }
 }
-customElements.define("via-animated-clip-caret-headline", A);
-const b = "http://www.w3.org/2000/svg", L = "0 0 500 150", g = {
+customElements.define("via-animated-clip-caret-headline", w);
+const A = "http://www.w3.org/2000/svg", M = "0 0 500 150", v = {
   underline: [
     "M8 130 C104 116 206 112 308 116 C374 118 438 122 492 130"
   ],
@@ -221,24 +221,24 @@ const b = "http://www.w3.org/2000/svg", L = "0 0 500 150", g = {
     "M484 102 L484 134 L442 134",
     "M58 134 L16 134 L16 102"
   ]
-}, S = "underline";
-function y(i, e) {
-  const t = g[e];
+}, D = "underline";
+function L(a, e) {
+  const t = v[e];
   if (t === void 0) {
     console.warn(
-      'unknown highlight shape "' + e + '" (must be one of ' + Object.keys(g) + ")"
+      'unknown highlight shape "' + e + '" (must be one of ' + Object.keys(v) + ")"
     );
     return;
   }
-  if (i.querySelector("svg") !== null)
+  if (a.querySelector("svg") !== null)
     return;
-  const s = document.createElementNS(b, "svg");
-  s.setAttribute("viewBox", L), s.setAttribute("preserveAspectRatio", "none"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), t.forEach((a) => {
-    const n = document.createElementNS(b, "path");
-    n.setAttribute("d", a), n.setAttribute("pathLength", "100"), s.appendChild(n);
-  }), i.appendChild(s);
+  const s = document.createElementNS(A, "svg");
+  s.setAttribute("viewBox", M), s.setAttribute("preserveAspectRatio", "none"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), t.forEach((i) => {
+    const n = document.createElementNS(A, "path");
+    n.setAttribute("d", i), n.setAttribute("pathLength", "100"), s.appendChild(n);
+  }), a.appendChild(s);
 }
-class w extends c {
+class W extends c {
   loopingClassName = "is-looping";
   connectedCallback() {
     this.decorateWords(), super.connectedCallback();
@@ -254,27 +254,27 @@ class w extends c {
     return this.querySelectorAll(this.wordSelector).length < 2;
   }
   decorateWords() {
-    const e = this.getAttribute("shape") ?? S;
-    this.isSinglePhrase() && this.classList.add(this.loopingClassName), this.querySelectorAll(this.wordSelector).forEach((t) => y(t, e));
+    const e = this.getAttribute("shape") ?? D;
+    this.isSinglePhrase() && this.classList.add(this.loopingClassName), this.querySelectorAll(this.wordSelector).forEach((t) => L(t, e));
   }
 }
-customElements.define("via-animated-highlight-headline", w);
-const N = "marker";
-class M extends A {
+customElements.define("via-animated-highlight-headline", W);
+const F = "marker";
+class I extends w {
   connectedCallback() {
-    const e = this.getAttribute("shape") ?? N;
-    this.querySelectorAll(this.wordSelector).forEach((t) => y(t, e)), super.connectedCallback();
+    const e = this.getAttribute("shape") ?? F;
+    this.querySelectorAll(this.wordSelector).forEach((t) => L(t, e)), super.connectedCallback();
   }
 }
-customElements.define("via-animated-marker-caret-headline", M);
-const C = "http://www.w3.org/2000/svg", D = "M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z", W = 7;
-function d(i, e) {
-  return i + Math.random() * (e - i);
+customElements.define("via-animated-marker-caret-headline", I);
+const x = "http://www.w3.org/2000/svg", q = "M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z", H = 7;
+function m(a, e) {
+  return a + Math.random() * (e - a);
 }
-class F extends c {
+class P extends c {
   sparkleClassName = "sparkle";
   connectedCallback() {
-    const e = this.hasAttribute("sparkles") ? parseInt(this.getAttribute("sparkles")) : W;
+    const e = this.hasAttribute("sparkles") ? parseInt(this.getAttribute("sparkles")) : H;
     this.querySelectorAll(this.wordSelector).forEach((t) => this.scatter(t, e)), super.connectedCallback();
   }
   scatter(e, t) {
@@ -283,16 +283,16 @@ class F extends c {
         e.appendChild(this.sparkle(s, t));
   }
   sparkle(e, t) {
-    const s = document.createElementNS(C, "svg");
+    const s = document.createElementNS(x, "svg");
     s.setAttribute("viewBox", "0 0 24 24"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), s.setAttribute("class", this.sparkleClassName);
-    const a = d(9, 19), n = (e + d(0.15, 0.85)) / t;
-    s.style.setProperty("--sparkle-size", a.toFixed(1) + "px"), s.style.setProperty("--sparkle-x", (n * 100).toFixed(1) + "%"), s.style.setProperty("--sparkle-y", d(-22, 92).toFixed(1) + "%"), s.style.setProperty("--sparkle-delay", d(0, 1.6).toFixed(2) + "s"), s.style.setProperty("--sparkle-duration", d(1.1, 2.1).toFixed(2) + "s"), s.style.setProperty("--sparkle-turn", d(-40, 40).toFixed(0) + "deg");
-    const r = document.createElementNS(C, "path");
-    return r.setAttribute("d", D), s.appendChild(r), s;
+    const i = m(9, 19), n = (e + m(0.15, 0.85)) / t;
+    s.style.setProperty("--sparkle-size", i.toFixed(1) + "px"), s.style.setProperty("--sparkle-x", (n * 100).toFixed(1) + "%"), s.style.setProperty("--sparkle-y", m(-22, 92).toFixed(1) + "%"), s.style.setProperty("--sparkle-delay", m(0, 1.6).toFixed(2) + "s"), s.style.setProperty("--sparkle-duration", m(1.1, 2.1).toFixed(2) + "s"), s.style.setProperty("--sparkle-turn", m(-40, 40).toFixed(0) + "deg");
+    const r = document.createElementNS(x, "path");
+    return r.setAttribute("d", q), s.appendChild(r), s;
   }
 }
-customElements.define("via-animated-sparkle-headline", F);
-class q extends c {
+customElements.define("via-animated-sparkle-headline", P);
+class O extends c {
   #e = "is-loading";
   barDelay = 500;
   connectedCallback() {
@@ -302,8 +302,8 @@ class q extends c {
     super.next(e), e = e ?? this.current(), e !== null && (e.parentNode.classList.remove(this.#e), this.runAfter(this.barDelay, () => e.parentNode.classList.add(this.#e)));
   }
 }
-customElements.define("via-animated-loading-headline", q);
-class H extends m {
+customElements.define("via-animated-loading-headline", O);
+class T extends f {
   #e = "waiting";
   #t = "selected";
   selectionDuration = 500;
@@ -314,22 +314,22 @@ class H extends m {
   }
   showWord(e) {
     const t = this.current();
-    this.showLetter(e.querySelector("." + this.letterClassName), e), this.makeVisible(e), l(this, "word-replaced", { old: t, new: e });
+    this.showLetter(e.querySelector("." + this.letterClassName), e), this.makeVisible(e), h(this, "word-replaced", { old: t, new: e });
   }
   next(e = null) {
     if (e = e ?? this.current(), e === null)
       return;
     const t = this.getNextWord(e), s = e.parentNode;
     s.classList.add(this.#t), s.classList.remove(this.#e), this.runAfter(this.selectionDuration, () => {
-      s.classList.remove(this.#t), this.makeHidden(e), e.querySelectorAll("." + this.letterClassName).forEach((a) => this.makeHidden(a));
+      s.classList.remove(this.#t), this.makeHidden(e), e.querySelectorAll("." + this.letterClassName).forEach((i) => this.makeHidden(i));
     }), this.runAfter(this.selectionDuration * 2, () => this.showWord(t));
   }
   showLetter(e, t, s = !0) {
     super.showLetter(e, t, s), e.nextElementSibling || this.runAfter(200, () => t.parentNode.classList.add(this.#e));
   }
 }
-customElements.define("via-animated-type-headline", H);
-class I extends m {
+customElements.define("via-animated-type-headline", T);
+class R extends f {
   waitingClassName = "waiting";
   /** Backspacing is quicker than typing, the way it is for a real typist. */
   eraseDelay = 40;
@@ -354,29 +354,29 @@ class I extends m {
       this.runAfter(this.eraseDelay, () => this.eraseLetter(s, t));
       return;
     }
-    const a = this.getNextWord(t);
-    this.switchWord(t, a), this.typeWord(a);
+    const i = this.getNextWord(t);
+    this.switchWord(t, i), this.typeWord(i);
   }
   typeWord(e, t = !0) {
     const s = e.querySelectorAll("." + this.letterClassName);
-    s.length !== 0 && (s.forEach((a) => this.makeHidden(a)), this.makeVisible(e), this.typeLetter(s[0], e, t));
+    s.length !== 0 && (s.forEach((i) => this.makeHidden(i)), this.makeVisible(e), this.typeLetter(s[0], e, t));
   }
   typeLetter(e, t, s) {
     this.makeVisible(e);
-    const a = e.nextElementSibling;
-    if (a !== null) {
-      this.runAfter(this.lettersDelay, () => this.typeLetter(a, t, s));
+    const i = e.nextElementSibling;
+    if (i !== null) {
+      this.runAfter(this.lettersDelay, () => this.typeLetter(i, t, s));
       return;
     }
     this.classList.add(this.waitingClassName), s && this.runAfter(this.holdDelay, () => this.next(t));
   }
 }
-customElements.define("via-animated-type-delete-headline", I);
-const P = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&@*?", O = 900;
-class z extends m {
+customElements.define("via-animated-type-delete-headline", R);
+const z = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&@*?", _ = 900;
+class B extends f {
   steps = 7;
   tickDuration = 45;
-  charset = P;
+  charset = z;
   connectedCallback() {
     super.connectedCallback(), this.steps = this.hasAttribute("steps") ? parseInt(this.getAttribute("steps")) : this.steps, this.tickDuration = this.hasAttribute("tick") ? parseInt(this.getAttribute("tick")) : this.tickDuration, this.charset = this.getAttribute("charset") || this.charset, this.querySelectorAll("." + this.letterClassName).forEach((e) => {
       const t = e;
@@ -390,19 +390,19 @@ class z extends m {
    */
   markLeaving(e) {
     const t = e.querySelectorAll("." + this.letterClassName).length;
-    e.classList.add(this.leavingClassName), window.setTimeout(() => e.classList.remove(this.leavingClassName), t * this.lettersDelay + O);
+    e.classList.add(this.leavingClassName), window.setTimeout(() => e.classList.remove(this.leavingClassName), t * this.lettersDelay + _);
   }
-  hideOrShowLetter(e, t, s = !0, a = !1) {
-    super.hideOrShowLetter(e, t, s, a), !a && this.getAttribute("animation") === "shuffle" && this.shuffle(e);
+  hideOrShowLetter(e, t, s = !0, i = !1) {
+    super.hideOrShowLetter(e, t, s, i), !i && this.getAttribute("animation") === "shuffle" && this.shuffle(e);
   }
   shuffle(e) {
     const t = e.dataset.char;
-    !t || t.trim() === "" || u() || requestAnimationFrame(() => {
+    !t || t.trim() === "" || p() || requestAnimationFrame(() => {
       e.style.width = e.getBoundingClientRect().width + "px", e.classList.add("is-shuffling");
       const s = this.steps + Math.floor(Math.random() * 3);
-      let a = 0;
+      let i = 0;
       const n = () => {
-        if (a++ >= s) {
+        if (i++ >= s) {
           e.textContent = t, e.classList.remove("is-shuffling"), e.style.removeProperty("width");
           return;
         }
@@ -412,25 +412,139 @@ class z extends m {
     });
   }
 }
-customElements.define("via-animated-stagger-headline", z);
-class R extends c {
+customElements.define("via-animated-stagger-headline", B);
+class V extends c {
   connectedCallback() {
     this.querySelectorAll(this.wordSelector).forEach((e) => {
       e.dataset.text = e.textContent ?? "";
     }), super.connectedCallback();
   }
 }
-customElements.define("via-animated-mirror-headline", R);
-const _ = 700;
-function o(i, e = 2) {
-  return String(Math.max(0, Math.floor(i))).padStart(e, "0");
+customElements.define("via-animated-mirror-headline", V);
+const U = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", u = "perspective(420px) ", j = (a) => new Promise((e) => window.setTimeout(e, a));
+function d(a, e) {
+  a.firstElementChild.textContent = e;
 }
-class p extends HTMLElement {
+class Q extends c {
+  tiles = [];
+  charset = U;
+  speed = 90;
+  stagger = 70;
+  maxSteps = 12;
+  connectedCallback() {
+    this.charset = this.getAttribute("charset") || this.charset, this.speed = this.hasAttribute("speed") ? parseInt(this.getAttribute("speed")) : this.speed, this.stagger = this.hasAttribute("delay") ? parseInt(this.getAttribute("delay")) : this.stagger, this.maxSteps = this.hasAttribute("steps") ? parseInt(this.getAttribute("steps")) : this.maxSteps, this.build(), super.connectedCallback();
+  }
+  // The board has a fixed number of tiles, so there is nothing to measure.
+  resize() {
+  }
+  switchWord(e, t) {
+    this.makeHidden(e), this.makeVisible(t), this.show(this.phraseOf(t)), this.setAttribute("aria-label", t.textContent?.trim() ?? ""), h(this, "word-replaced", { old: e, new: t });
+  }
+  phraseOf(e) {
+    return (e.textContent ?? "").trim().replace(/\s+/g, " ").toUpperCase();
+  }
+  build() {
+    this.querySelector(".ah-board")?.remove();
+    const e = Array.from(this.querySelectorAll(this.wordSelector)), t = Math.max(1, ...e.map((n) => this.phraseOf(n).length)), s = document.createElement("span");
+    s.className = "ah-board", s.setAttribute("aria-hidden", "true"), this.tiles = [];
+    for (let n = 0; n < t; n++) {
+      const r = this.makeTile();
+      this.tiles.push(r), s.appendChild(r.root);
+    }
+    this.prepend(s);
+    const i = this.current();
+    i !== null && (this.settleOn(this.phraseOf(i)), this.setAttribute("role", "img"), this.setAttribute("aria-label", i.textContent?.trim() ?? ""));
+  }
+  makeTile() {
+    const e = (l) => {
+      const b = document.createElement("span");
+      b.className = "ah-half " + l;
+      const E = document.createElement("span");
+      return E.className = "ah-glyph", b.appendChild(E), b;
+    }, t = document.createElement("span");
+    t.className = "ah-tile";
+    const s = e("ah-top"), i = e("ah-bottom"), n = e("ah-top ah-flap"), r = e("ah-bottom ah-flap");
+    return t.append(s, i, n, r), { root: t, top: s, bottom: i, flapTop: n, flapBottom: r, shown: " ", token: 0, animations: [] };
+  }
+  /** Put the board on `phrase` without any motion. */
+  settleOn(e) {
+    this.tiles.forEach((t, s) => {
+      t.shown = e.charAt(s) || " ", this.settle(t);
+    });
+  }
+  settle(e) {
+    e.animations.forEach((t) => t.cancel()), e.animations = [], e.root.classList.remove("is-flipping"), d(e.top, e.shown), d(e.bottom, e.shown);
+  }
+  show(e) {
+    let t = 0;
+    this.tiles.forEach((s, i) => {
+      const n = e.charAt(i) || " ";
+      if (n === s.shown && s.root.classList.contains("is-flipping") === !1) {
+        s.token++;
+        return;
+      }
+      this.run(s, n, t++ * this.stagger);
+    });
+  }
+  async run(e, t, s) {
+    const i = ++e.token;
+    if (await j(s), i !== e.token)
+      return;
+    const n = this.path(e.shown, t);
+    if (n.length === 0)
+      return this.settle(e);
+    e.root.classList.add("is-flipping");
+    for (const r of n) {
+      if (await this.step(e, e.shown, r), i !== e.token)
+        return;
+      e.shown = r;
+    }
+    this.settle(e);
+  }
+  /** The characters a tile steps through on its way from one to the other. */
+  path(e, t) {
+    if (e === t)
+      return [];
+    const s = this.charset.indexOf(e), i = this.charset.indexOf(t);
+    if (s < 0 || i < 0)
+      return [t];
+    const n = [];
+    for (let r = (s + 1) % this.charset.length; n.push(this.charset.charAt(r)), r !== i; r = (r + 1) % this.charset.length)
+      ;
+    return n.slice(-this.maxSteps);
+  }
+  /** One flip: the top flap falls over the hinge, then the bottom flap lands. */
+  async step(e, t, s) {
+    d(e.top, s), d(e.bottom, t), d(e.flapTop, t), d(e.flapBottom, s);
+    const i = Math.max(1, this.speed / 2);
+    e.animations.forEach((l) => l.cancel());
+    const n = e.flapTop.animate(
+      [{ transform: u + "rotateX(0deg)" }, { transform: u + "rotateX(-90deg)" }],
+      { duration: i, easing: "ease-in", fill: "forwards" }
+    ), r = e.flapBottom.animate(
+      [{ transform: u + "rotateX(90deg)" }, { transform: u + "rotateX(0deg)" }],
+      { duration: i, delay: i, easing: "ease-out", fill: "both" }
+    );
+    e.animations = [n, r];
+    try {
+      await r.finished;
+    } catch {
+      return;
+    }
+    d(e.bottom, s);
+  }
+}
+customElements.define("via-animated-flipboard-headline", Q);
+const X = 700;
+function o(a, e = 2) {
+  return String(Math.max(0, Math.floor(a))).padStart(e, "0");
+}
+class C extends HTMLElement {
   shown = [];
   label = "";
   timer;
   connectedCallback() {
-    this.setAttribute("role", "timer"), this.setAttribute("aria-live", "off"), this.begin(), l(this, "ready");
+    this.setAttribute("role", "timer"), this.setAttribute("aria-live", "off"), this.begin(), h(this, "ready");
   }
   disconnectedCallback() {
     this.end();
@@ -462,12 +576,12 @@ class p extends HTMLElement {
     if (s.length !== this.shown.length)
       this.rebuild(s);
     else {
-      const a = !u();
+      const i = !p();
       s.forEach((n, r) => {
         if (n === this.shown[r])
           return;
-        const h = this.children[r];
-        this.classify(h, n), a && r < t ? this.roll(h, n) : h.textContent = n;
+        const l = this.children[r];
+        this.classify(l, n), i && r < t ? this.roll(l, n) : l.textContent = n;
       });
     }
     this.shown = s, this.announce(s.slice(0, t).join(""));
@@ -486,16 +600,16 @@ class p extends HTMLElement {
       e.removeChild(e.firstChild);
     const s = document.createElement("span");
     s.className = "ah-face is-out", s.textContent = e.textContent;
-    const a = document.createElement("span");
-    a.className = "ah-face is-in", a.textContent = t, e.textContent = "", e.append(s, a);
+    const i = document.createElement("span");
+    i.className = "ah-face is-in", i.textContent = t, e.textContent = "", e.append(s, i);
     const n = () => s.remove();
-    s.addEventListener("animationend", n, { once: !0 }), window.setTimeout(n, _);
+    s.addEventListener("animationend", n, { once: !0 }), window.setTimeout(n, X);
   }
   announce(e) {
     e = e.replace(/[:.\s]+$/, ""), e !== this.label && (this.label = e, this.setAttribute("aria-label", e));
   }
 }
-class T extends p {
+class $ extends C {
   static get observedAttributes() {
     return ["timezone", "format", "seconds"];
   }
@@ -516,17 +630,17 @@ class T extends p {
   }
   tick() {
     const e = /* @__PURE__ */ new Date();
-    this.display(this.format(e)), l(this, "tick", { date: e }), this.timer = window.setTimeout(() => this.tick(), 1e3 - e.getMilliseconds() + 4);
+    this.display(this.format(e)), h(this, "tick", { date: e }), this.timer = window.setTimeout(() => this.tick(), 1e3 - e.getMilliseconds() + 4);
   }
   format(e) {
     const t = {};
     this.formatter.formatToParts(e).forEach((n) => t[n.type] = n.value);
-    let a = (t.hour === "24" ? o(0) : t.hour) + ":" + t.minute;
-    return this.flag("seconds", !0) && (a += ":" + t.second), this.getAttribute("format") === "12h" && (a += " " + t.dayPeriod), a;
+    let i = (t.hour === "24" ? o(0) : t.hour) + ":" + t.minute;
+    return this.flag("seconds", !0) && (i += ":" + t.second), this.getAttribute("format") === "12h" && (i += " " + t.dayPeriod), i;
   }
 }
-customElements.define("via-animated-clock", T);
-class B extends p {
+customElements.define("via-animated-clock", $);
+class G extends C {
   static get observedAttributes() {
     return ["target", "format"];
   }
@@ -545,29 +659,29 @@ class B extends p {
       return;
     }
     const t = Math.max(0, e - Date.now()), s = Math.ceil(t / 1e3);
-    if (this.display(this.format(s)), l(this, "tick", { remaining: s }), t === 0) {
-      this.completed = !0, this.setAttribute("complete", ""), l(this, "complete");
+    if (this.display(this.format(s)), h(this, "tick", { remaining: s }), t === 0) {
+      this.completed = !0, this.setAttribute("complete", ""), h(this, "complete");
       return;
     }
     this.timer = window.setTimeout(() => this.tick(), t - (s - 1) * 1e3 + 4);
   }
   format(e) {
-    const t = Math.floor(e / 86400), s = Math.floor(e / 3600) % 24, a = Math.floor(e / 60) % 60, n = e % 60;
+    const t = Math.floor(e / 86400), s = Math.floor(e / 3600) % 24, i = Math.floor(e / 60) % 60, n = e % 60;
     switch (this.getAttribute("format")) {
       case "labeled":
-        return `${o(t)}d ${o(s)}h ${o(a)}m ${o(n)}s`;
+        return `${o(t)}d ${o(s)}h ${o(i)}m ${o(n)}s`;
       case "minimal":
         if (t === 0)
-          return [s, a, n].map((r) => o(r)).join(":");
+          return [s, i, n].map((r) => o(r)).join(":");
       // fall through: with days left, minimal is the compact notation
       default:
-        return [t, s, a, n].map((r) => o(r)).join(":");
+        return [t, s, i, n].map((r) => o(r)).join(":");
     }
   }
 }
-customElements.define("via-animated-countdown", B);
-const E = 24 * 3600;
-class V extends p {
+customElements.define("via-animated-countdown", G);
+const y = 24 * 3600;
+class Z extends C {
   static get observedAttributes() {
     return ["start", "fps", "format", "paused"];
   }
@@ -582,7 +696,7 @@ class V extends p {
     this.end(), this.begin();
   }
   begin() {
-    this.fps = Math.max(1, Math.round(this.number("fps", 30))), this.base = this.parse(this.getAttribute("start") ?? ""), this.since = performance.now(), this.lastSecond = -1, this.render(), !this.hasAttribute("paused") && !u() && (this.frame = requestAnimationFrame(() => this.loop()));
+    this.fps = Math.max(1, Math.round(this.number("fps", 30))), this.base = this.parse(this.getAttribute("start") ?? ""), this.since = performance.now(), this.lastSecond = -1, this.render(), !this.hasAttribute("paused") && !p() && (this.frame = requestAnimationFrame(() => this.loop()));
   }
   end() {
     super.end(), cancelAnimationFrame(this.frame), this.frame = void 0;
@@ -600,21 +714,21 @@ class V extends p {
     return this.base + Math.floor(e);
   }
   render() {
-    const e = this.frames(), t = Math.floor(e / this.fps) % E, s = this.getAttribute("format") !== "compact", a = [t / 3600, t / 60 % 60, t % 60].map((n) => o(n)).join(":");
-    s ? this.display(a + ":" + o(e % this.fps), a.length) : this.display(a), t !== this.lastSecond && (this.lastSecond = t, l(this, "tick", { second: t }));
+    const e = this.frames(), t = Math.floor(e / this.fps) % y, s = this.getAttribute("format") !== "compact", i = [t / 3600, t / 60 % 60, t % 60].map((n) => o(n)).join(":");
+    s ? this.display(i + ":" + o(e % this.fps), i.length) : this.display(i), t !== this.lastSecond && (this.lastSecond = t, h(this, "tick", { second: t }));
   }
   /** "HH:MM:SS:FF" or "HH:MM:SS" to frames. */
   parse(e) {
-    const t = e.split(":").map((h) => parseInt(h)).filter((h) => Number.isFinite(h));
+    const t = e.split(":").map((l) => parseInt(l)).filter((l) => Number.isFinite(l));
     if (t.length === 0)
       return 0;
-    const [s = 0, a = 0, n = 0, r = 0] = t.length >= 4 ? t : [...t, ...Array(4 - t.length).fill(0)];
-    return ((s * 3600 + a * 60 + n) * this.fps + r) % (E * this.fps);
+    const [s = 0, i = 0, n = 0, r = 0] = t.length >= 4 ? t : [...t, ...Array(4 - t.length).fill(0)];
+    return ((s * 3600 + i * 60 + n) * this.fps + r) % (y * this.fps);
   }
 }
-customElements.define("via-animated-timecode", V);
-const j = (i) => 1 - Math.pow(1 - i, 3);
-class Q extends HTMLElement {
+customElements.define("via-animated-timecode", Z);
+const K = (a) => 1 - Math.pow(1 - a, 3);
+class Y extends HTMLElement {
   static get observedAttributes() {
     return ["from", "to", "decimals", "prefix", "suffix", "locale", "bar"];
   }
@@ -631,7 +745,7 @@ class Q extends HTMLElement {
     const e = this.getAttribute("trigger") ?? "view";
     e === "load" || e === "view" && !("IntersectionObserver" in window) ? this.play() : e === "view" && (this.observer = new IntersectionObserver((t) => {
       t.some((s) => s.isIntersecting) && (this.observer?.disconnect(), this.play());
-    }, { threshold: 0.4 }), this.observer.observe(this)), l(this, "ready");
+    }, { threshold: 0.4 }), this.observer.observe(this)), h(this, "ready");
   }
   disconnectedCallback() {
     cancelAnimationFrame(this.frame), this.observer?.disconnect();
@@ -659,22 +773,22 @@ class Q extends HTMLElement {
   run(e, t) {
     cancelAnimationFrame(this.frame), this.classList.remove("is-landed");
     const s = Math.max(0, this.number("duration", 1800));
-    if (u() || s === 0 || e === t)
+    if (p() || s === 0 || e === t)
       return this.land(t);
-    const a = performance.now(), n = (r) => {
-      const h = Math.min(1, (r - a) / s);
-      this.paint(e + (t - e) * j(h)), h < 1 ? this.frame = requestAnimationFrame(n) : this.land(t);
+    const i = performance.now(), n = (r) => {
+      const l = Math.min(1, (r - i) / s);
+      this.paint(e + (t - e) * K(l)), l < 1 ? this.frame = requestAnimationFrame(n) : this.land(t);
     };
     this.frame = requestAnimationFrame(n);
   }
   land(e) {
-    this.paint(e), this.classList.add("is-landed"), l(this, "complete", { value: e });
+    this.paint(e), this.classList.add("is-landed"), h(this, "complete", { value: e });
   }
   paint(e) {
     this.value = e;
     const t = Math.max(0, Math.round(this.number("decimals", 0)));
     this.prefixElement.textContent = this.getAttribute("prefix") ?? "", this.valueElement.textContent = this.format(e, t), this.suffixElement.textContent = this.getAttribute("suffix") ?? "", this.setAttribute("aria-label", (this.getAttribute("prefix") ?? "") + this.format(this.number("to", 100), t) + (this.getAttribute("suffix") ?? ""));
-    const s = this.number("from", 0), a = this.number("to", 100), n = a === s ? 1 : (e - s) / (a - s);
+    const s = this.number("from", 0), i = this.number("to", 100), n = i === s ? 1 : (e - s) / (i - s);
     this.style.setProperty("--ah-progress", Math.min(1, Math.max(0, n)).toFixed(4));
   }
   format(e, t) {
@@ -688,11 +802,11 @@ class Q extends HTMLElement {
     }
   }
 }
-customElements.define("via-animated-progress", Q);
-var x = /* @__PURE__ */ ((i) => (i.Blur = "blur", i.Bounce = "bounce", i.Clip = "clip", i.ClipCaret = "clip-caret", i.Glitch = "glitch", i.Highlight = "highlight", i.LoadingBar = "loading-bar", i.MarkerCaret = "marker-caret", i.Mirror = "mirror", i.Pop = "pop", i.Push = "push", i.Rise = "rise", i.Roll = "roll", i.Rolling = "rolling", i.Rotate1 = "rotate-1", i.Rotate2 = "rotate-2", i.Rotate3 = "rotate-3", i.Scale = "scale", i.Shuffle = "shuffle", i.Slide = "slide", i.Sparkle = "sparkle", i.Type = "type", i.TypeDelete = "type-delete", i.Wave = "wave", i.Zoom = "zoom", i))(x || {});
-function U(i, e) {
+customElements.define("via-animated-progress", Y);
+var S = /* @__PURE__ */ ((a) => (a.Blur = "blur", a.Bounce = "bounce", a.Clip = "clip", a.ClipCaret = "clip-caret", a.Flipboard = "flipboard", a.Glitch = "glitch", a.Highlight = "highlight", a.LoadingBar = "loading-bar", a.MarkerCaret = "marker-caret", a.Mirror = "mirror", a.Pop = "pop", a.Push = "push", a.Rise = "rise", a.Roll = "roll", a.Rolling = "rolling", a.Rotate1 = "rotate-1", a.Rotate2 = "rotate-2", a.Rotate3 = "rotate-3", a.Scale = "scale", a.Shuffle = "shuffle", a.Slide = "slide", a.Sparkle = "sparkle", a.Type = "type", a.TypeDelete = "type-delete", a.Wave = "wave", a.Zoom = "zoom", a))(S || {});
+function J(a, e) {
   let t;
-  switch (i) {
+  switch (a) {
     case "clip":
       t = document.createElement("via-animated-clip-headline");
       break;
@@ -710,6 +824,9 @@ function U(i, e) {
       break;
     case "sparkle":
       t = document.createElement("via-animated-sparkle-headline");
+      break;
+    case "flipboard":
+      t = document.createElement("via-animated-flipboard-headline");
       break;
     case "mirror":
       t = document.createElement("via-animated-mirror-headline");
@@ -743,11 +860,11 @@ function U(i, e) {
       t = document.createElement("via-animated-type-delete-headline");
       break;
     default:
-      throw new Error("invalid animation type " + i + " (must be one of " + Object.values(x) + ")");
+      throw new Error("invalid animation type " + a + " (must be one of " + Object.values(S) + ")");
   }
   return Array.from(e).forEach((s) => t.setAttribute(s.name, s.value)), t;
 }
-class $ extends HTMLElement {
+class ee extends HTMLElement {
   static get observedAttributes() {
     return ["animation", "hold", "delay", "shape"];
   }
@@ -758,15 +875,15 @@ class $ extends HTMLElement {
     this.render();
   }
   render() {
-    const e = this.getAttribute("animation"), t = U(e, this.attributes);
+    const e = this.getAttribute("animation"), t = J(e, this.attributes);
     Array.from(this.children).forEach((s) => {
-      s.tagName?.startsWith("VIA-ANIMATED-") ? s.childNodes.forEach((a) => t.appendChild(a.cloneNode(!0))) : t.appendChild(s.cloneNode(!0));
+      s.tagName?.startsWith("VIA-ANIMATED-") ? s.childNodes.forEach((i) => t.appendChild(i.cloneNode(!0))) : t.appendChild(s.cloneNode(!0));
     }), this.innerHTML = "", this.appendChild(t);
   }
 }
-customElements.define("via-animated-headline", $);
-var f = /* @__PURE__ */ ((i) => (i.Clock = "clock", i.Countdown = "countdown", i.Progress = "progress", i.Timecode = "timecode", i))(f || {});
-class G extends HTMLElement {
+customElements.define("via-animated-headline", ee);
+var g = /* @__PURE__ */ ((a) => (a.Clock = "clock", a.Countdown = "countdown", a.Progress = "progress", a.Timecode = "timecode", a))(g || {});
+class te extends HTMLElement {
   static get observedAttributes() {
     return ["animation"];
   }
@@ -778,16 +895,16 @@ class G extends HTMLElement {
   }
   render() {
     const e = this.getAttribute("animation");
-    if (!Object.values(f).includes(e))
-      throw new Error("invalid counter type " + e + " (must be one of " + Object.values(f) + ")");
+    if (!Object.values(g).includes(e))
+      throw new Error("invalid counter type " + e + " (must be one of " + Object.values(g) + ")");
     const t = document.createElement("via-animated-" + e);
     Array.from(this.attributes).forEach((s) => t.setAttribute(s.name, s.value)), this.innerHTML = "", this.appendChild(t);
   }
 }
-customElements.define("via-animated-counter", G);
+customElements.define("via-animated-counter", te);
 export {
-  x as AnimationType,
-  f as CounterType
+  S as AnimationType,
+  g as CounterType
 };
 /**!
  * Plain Vanilla JavaScript Animated Headline Component
@@ -872,6 +989,21 @@ export {
  *
  * The ghosts are pseudo-elements that read the phrase from `data-text`, which
  * is all this class has to provide.
+ *
+ * @author Christoph Massmann <cm@vianetz.com>
+ * @license https://opensource.org/licenses/MIT MIT License
+ */
+/**!
+ * Plain Vanilla JavaScript Animated Headline Component
+ *
+ * Flipboard: the phrase is shown on an airport-style split-flap board. Like
+ * the clock, it compares the old and the new phrase character by character and
+ * only the tiles that differ flip - each one stepping through the alphabet
+ * until it lands on its new character, left to right.
+ *
+ * Every tile is four halves: the static top and bottom, and two flaps that
+ * fold over the hinge. The folding is driven with the Web Animations API, one
+ * flip per character step.
  *
  * @author Christoph Massmann <cm@vianetz.com>
  * @license https://opensource.org/licenses/MIT MIT License
