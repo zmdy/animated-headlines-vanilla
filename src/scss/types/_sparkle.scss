@@ -1,10 +1,20 @@
-// Four-pointed twinkles scattered around the phrase. Every sparkle carries its
-// own position, size and offsets as inline custom properties, so one keyframe
-// covers the lot and nothing is driven from JavaScript.
+// A phrase that resolves out of a soft blur, with four-pointed twinkles that
+// burst in alongside it and then keep twinkling.
+//
+// Every sparkle carries its own position, size and timing as inline custom
+// properties (see sparkle.ts), so one set of keyframes covers the lot and
+// nothing is driven from JavaScript:
+//   --sparkle-enter     when its entrance burst starts (all within the first
+//                       half second, so they arrive with the text, not after it)
+//   --sparkle-exit      small stagger for its exit when the phrase leaves
+//   --sparkle-duration  length of one twinkle once it is settled
+
+@use "../mixins";
 
 @mixin styles() {
     --ah-sparkle-color: #9e7aff;
     --ah-sparkle-color-alt: #fe8bbb;
+    --ah-sparkle-burst: 0.45s;
 
     b {
         position: relative;
@@ -12,8 +22,17 @@
 
         &:not([hidden]) {
             opacity: 1;
-            animation: ah-sparkle-word-in 0.6s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+            animation: ah-sparkle-word-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
         }
+    }
+
+    // A phrase on its way out still has to be painted, so it is taken out of
+    // flow rather than removed. Only the phrase that just left carries
+    // `is-leaving`, so the ones that merely start hidden stay silent.
+    @include mixins.leaving-phrase;
+
+    b[hidden].is-leaving {
+        animation: ah-sparkle-word-out 0.6s cubic-bezier(0.4, 0, 1, 1) both;
     }
 
     .sparkle {
@@ -39,8 +58,17 @@
         fill: var(--ah-sparkle-color-alt);
     }
 
+    // Burst in with the text, then twinkle for as long as the phrase stays.
     b:not([hidden]) .sparkle {
-        animation: ah-sparkle-pop var(--sparkle-duration) var(--sparkle-delay) cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite both;
+        animation:
+            ah-sparkle-burst var(--ah-sparkle-burst) var(--sparkle-enter) cubic-bezier(0.34, 1.56, 0.64, 1) both,
+            ah-sparkle-twinkle var(--sparkle-duration) calc(var(--sparkle-enter) + var(--ah-sparkle-burst)) ease-in-out infinite;
+    }
+
+    // Shrink away with the phrase, so they do not vanish ahead of it.
+    b[hidden].is-leaving .sparkle {
+        opacity: 1;
+        animation: ah-sparkle-exit 0.4s var(--sparkle-exit) ease-in both;
     }
 
     @media (prefers-reduced-motion: reduce), print {
@@ -50,31 +78,67 @@
     }
 
     @keyframes ah-sparkle-word-in {
-        from {
+        0% {
             opacity: 0;
-            transform: translateY(0.18em);
+            filter: blur(10px);
+            transform: scale(0.96);
         }
 
-        to {
+        60% {
             opacity: 1;
-            transform: translateY(0);
+        }
+
+        100% {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
         }
     }
 
-    // Hold near full size through the middle so each twinkle reads as a shape
-    // rather than a flicker, then shrink away on the same curve it grew on.
-    @keyframes ah-sparkle-pop {
+    @keyframes ah-sparkle-word-out {
+        0% {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            filter: blur(10px);
+            transform: scale(1.04);
+        }
+    }
+
+    // A quick overshoot, so the entrance reads as a pop rather than a fade.
+    @keyframes ah-sparkle-burst {
         0% {
             opacity: 0;
             transform: scale(0) rotate(0);
         }
 
-        30% {
+        100% {
+            opacity: 1;
+            transform: scale(1) rotate(calc(var(--sparkle-turn) / 2));
+        }
+    }
+
+    // Starts and ends where the burst left off, dipping in between, so the
+    // hand-over is seamless and the sparkle never disappears completely.
+    @keyframes ah-sparkle-twinkle {
+        0%,
+        100% {
             opacity: 1;
             transform: scale(1) rotate(calc(var(--sparkle-turn) / 2));
         }
 
-        70% {
+        50% {
+            opacity: 0.35;
+            transform: scale(0.45) rotate(var(--sparkle-turn));
+        }
+    }
+
+    @keyframes ah-sparkle-exit {
+        0% {
             opacity: 1;
             transform: scale(1) rotate(calc(var(--sparkle-turn) / 2));
         }

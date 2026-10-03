@@ -12,6 +12,12 @@ export default class AnimatedWordsElement extends HTMLElement {
     #isStopped = false;
     /** Bumped on every stop, so timers queued before it know they are stale. */
     #generation = 0;
+    #resizeTimer: number | undefined;
+    /** The widths depend on the font size, which media queries change with the window. */
+    readonly #onWindowResize = () => {
+        window.clearTimeout(this.#resizeTimer);
+        this.#resizeTimer = window.setTimeout(() => this.resize(), 120);
+    };
     holdDelay: number = 2500;
 
     protected readonly wordSelector = 'b';
@@ -23,6 +29,7 @@ export default class AnimatedWordsElement extends HTMLElement {
 
         // The widths above are only right once the web font has arrived.
         document.fonts?.ready.then(() => this.isConnected && this.resize());
+        window.addEventListener('resize', this.#onWindowResize);
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (! prefersReducedMotion) {
@@ -35,6 +42,8 @@ export default class AnimatedWordsElement extends HTMLElement {
     disconnectedCallback() {
         // Nobody is watching any more: do not keep cycling in the background.
         this.halt();
+        window.removeEventListener('resize', this.#onWindowResize);
+        window.clearTimeout(this.#resizeTimer);
     }
 
     attributeChangedCallback() {

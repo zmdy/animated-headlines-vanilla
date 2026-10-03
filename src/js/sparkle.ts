@@ -1,8 +1,8 @@
 /**
  * Plain Vanilla JavaScript Animated Headline Component
  *
- * Sparkles: the phrase arrives with a scatter of four-pointed twinkles that
- * pop in and out around it.
+ * Sparkles: the phrase resolves out of a blur while a scatter of four-pointed
+ * twinkles bursts in around it, then keeps twinkling until the phrase leaves.
  *
  * The positions, sizes and offsets are rolled once, when the element is set
  * up, and handed to CSS as inline values - so the twinkling itself costs no
@@ -66,7 +66,10 @@ export default class SparkleAnimatedWordsElement extends AnimatedWordsElement {
         svg.style.setProperty('--sparkle-size', size.toFixed(1) + 'px');
         svg.style.setProperty('--sparkle-x', (column * 100).toFixed(1) + '%');
         svg.style.setProperty('--sparkle-y', between(-22, 92).toFixed(1) + '%');
-        svg.style.setProperty('--sparkle-delay', between(0, 1.6).toFixed(2) + 's');
+        // All entrances fall inside the first half second, so the twinkles
+        // arrive together with the text instead of trailing behind it.
+        svg.style.setProperty('--sparkle-enter', between(0.05, 0.5).toFixed(2) + 's');
+        svg.style.setProperty('--sparkle-exit', between(0, 0.2).toFixed(2) + 's');
         svg.style.setProperty('--sparkle-duration', between(1.1, 2.1).toFixed(2) + 's');
         svg.style.setProperty('--sparkle-turn', between(-40, 40).toFixed(0) + 'deg');
 
