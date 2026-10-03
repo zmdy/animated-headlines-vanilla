@@ -79,7 +79,7 @@ class h extends HTMLElement {
   }
 }
 customElements.define("via-animated-words-headline", h);
-class d extends h {
+class o extends h {
   lettersDelay = 50;
   letterClassName = "letter";
   connectedCallback() {
@@ -115,7 +115,7 @@ class d extends h {
     }), e.innerHTML = t.map((s) => s.outerHTML).join(""), e.style.opacity = "1";
   }
 }
-customElements.define("via-animated-letters-headline", d);
+customElements.define("via-animated-letters-headline", o);
 class u extends h {
   revealDelay = 600;
   connectedCallback() {
@@ -139,7 +139,7 @@ class u extends h {
   }
 }
 customElements.define("via-animated-clip-headline", u);
-class b extends u {
+class f extends u {
   waitingClassName = "waiting";
   showWord(e) {
     const t = this.animate(
@@ -154,8 +154,8 @@ class b extends u {
     this.classList.remove(this.waitingClassName), super.next(e);
   }
 }
-customElements.define("via-animated-clip-caret-headline", b);
-const o = "http://www.w3.org/2000/svg", f = "0 0 500 150", c = {
+customElements.define("via-animated-clip-caret-headline", f);
+const c = "http://www.w3.org/2000/svg", b = "0 0 500 150", d = {
   underline: [
     "M8 130 C104 116 206 112 308 116 C374 118 438 122 492 130"
   ],
@@ -211,7 +211,7 @@ const o = "http://www.w3.org/2000/svg", f = "0 0 500 150", c = {
     "M58 134 L16 134 L16 102"
   ]
 }, g = "underline";
-class L extends h {
+class y extends h {
   loopingClassName = "is-looping";
   connectedCallback() {
     this.decorateWords(), super.connectedCallback();
@@ -227,10 +227,10 @@ class L extends h {
     return this.querySelectorAll(this.wordSelector).length < 2;
   }
   decorateWords() {
-    const e = this.getAttribute("shape") ?? g, t = c[e];
+    const e = this.getAttribute("shape") ?? g, t = d[e];
     if (t === void 0) {
       console.warn(
-        'unknown highlight shape "' + e + '" (must be one of ' + Object.keys(c) + ")"
+        'unknown highlight shape "' + e + '" (must be one of ' + Object.keys(d) + ")"
       );
       return;
     }
@@ -239,15 +239,15 @@ class L extends h {
   drawShape(e, t) {
     if (e.querySelector("svg") !== null)
       return;
-    const s = document.createElementNS(o, "svg");
-    s.setAttribute("viewBox", f), s.setAttribute("preserveAspectRatio", "none"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), t.forEach((a) => {
-      const n = document.createElementNS(o, "path");
+    const s = document.createElementNS(c, "svg");
+    s.setAttribute("viewBox", b), s.setAttribute("preserveAspectRatio", "none"), s.setAttribute("aria-hidden", "true"), s.setAttribute("focusable", "false"), t.forEach((a) => {
+      const n = document.createElementNS(c, "path");
       n.setAttribute("d", a), n.setAttribute("pathLength", "100"), s.appendChild(n);
     }), e.appendChild(s);
   }
 }
-customElements.define("via-animated-highlight-headline", L);
-class v extends h {
+customElements.define("via-animated-highlight-headline", y);
+class L extends h {
   #e = "is-loading";
   barDelay = 500;
   connectedCallback() {
@@ -257,8 +257,8 @@ class v extends h {
     super.next(e), e = e ?? this.current(), e !== null && (e.parentNode.classList.remove(this.#e), this.runAfter(this.barDelay, () => e.parentNode.classList.add(this.#e)));
   }
 }
-customElements.define("via-animated-loading-headline", v);
-class y extends d {
+customElements.define("via-animated-loading-headline", L);
+class v extends o {
   #e = "waiting";
   #t = "selected";
   selectionDuration = 500;
@@ -283,9 +283,52 @@ class y extends d {
     super.showLetter(e, t, s), e.nextElementSibling || this.runAfter(200, () => t.parentNode.classList.add(this.#e));
   }
 }
-customElements.define("via-animated-type-headline", y);
-var m = /* @__PURE__ */ ((i) => (i.Blur = "blur", i.Bounce = "bounce", i.Clip = "clip", i.ClipCaret = "clip-caret", i.Glitch = "glitch", i.Highlight = "highlight", i.LoadingBar = "loading-bar", i.Push = "push", i.Rotate1 = "rotate-1", i.Rotate2 = "rotate-2", i.Rotate3 = "rotate-3", i.Scale = "scale", i.Slide = "slide", i.Type = "type", i.Wave = "wave", i.Zoom = "zoom", i))(m || {});
-function E(i, e) {
+customElements.define("via-animated-type-headline", v);
+class E extends o {
+  waitingClassName = "waiting";
+  /** Backspacing is quicker than typing, the way it is for a real typist. */
+  eraseDelay = 40;
+  connectedCallback() {
+    super.connectedCallback(), this.eraseDelay = this.hasAttribute("erase") ? parseInt(this.getAttribute("erase")) : Math.max(20, Math.round(this.lettersDelay * 0.6));
+    const e = this.current();
+    e !== null && this.typeWord(e, !1);
+  }
+  resize() {
+  }
+  next(e = null) {
+    if (e = e ?? this.current(), e === null)
+      return;
+    const t = e.querySelectorAll("." + this.letterClassName);
+    t.length !== 0 && (this.classList.remove(this.waitingClassName), this.eraseLetter(t[t.length - 1], e));
+  }
+  /** Walks backwards through the phrase, hiding one character per tick. */
+  eraseLetter(e, t) {
+    this.makeHidden(e);
+    const s = e.previousElementSibling;
+    if (s !== null) {
+      this.runAfter(this.eraseDelay, () => this.eraseLetter(s, t));
+      return;
+    }
+    const a = this.getNextWord(t);
+    this.switchWord(t, a), this.typeWord(a);
+  }
+  typeWord(e, t = !0) {
+    const s = e.querySelectorAll("." + this.letterClassName);
+    s.length !== 0 && (s.forEach((a) => this.makeHidden(a)), this.makeVisible(e), this.typeLetter(s[0], e, t));
+  }
+  typeLetter(e, t, s) {
+    this.makeVisible(e);
+    const a = e.nextElementSibling;
+    if (a !== null) {
+      this.runAfter(this.lettersDelay, () => this.typeLetter(a, t, s));
+      return;
+    }
+    this.classList.add(this.waitingClassName), s && this.runAfter(this.holdDelay, () => this.next(t));
+  }
+}
+customElements.define("via-animated-type-delete-headline", E);
+var m = /* @__PURE__ */ ((i) => (i.Blur = "blur", i.Bounce = "bounce", i.Clip = "clip", i.ClipCaret = "clip-caret", i.Glitch = "glitch", i.Highlight = "highlight", i.LoadingBar = "loading-bar", i.Push = "push", i.Rotate1 = "rotate-1", i.Rotate2 = "rotate-2", i.Rotate3 = "rotate-3", i.Scale = "scale", i.Slide = "slide", i.Type = "type", i.TypeDelete = "type-delete", i.Wave = "wave", i.Zoom = "zoom", i))(m || {});
+function x(i, e) {
   let t;
   switch (i) {
     case "clip":
@@ -318,12 +361,15 @@ function E(i, e) {
     case "type":
       t = document.createElement("via-animated-type-headline");
       break;
+    case "type-delete":
+      t = document.createElement("via-animated-type-delete-headline");
+      break;
     default:
       throw new Error("invalid animation type " + i + " (must be one of " + Object.values(m) + ")");
   }
   return Array.from(e).forEach((s) => t.setAttribute(s.name, s.value)), t;
 }
-class S extends HTMLElement {
+class A extends HTMLElement {
   static get observedAttributes() {
     return ["animation", "hold", "delay", "shape"];
   }
@@ -334,13 +380,13 @@ class S extends HTMLElement {
     this.render();
   }
   render() {
-    const e = this.getAttribute("animation"), t = E(e, this.attributes);
+    const e = this.getAttribute("animation"), t = x(e, this.attributes);
     Array.from(this.children).forEach((s) => {
       s.tagName?.startsWith("VIA-ANIMATED-") ? s.childNodes.forEach((a) => t.appendChild(a.cloneNode(!0))) : t.appendChild(s.cloneNode(!0));
     }), this.innerHTML = "", this.appendChild(t);
   }
 }
-customElements.define("via-animated-headline", S);
+customElements.define("via-animated-headline", A);
 export {
   m as AnimationType
 };
@@ -369,6 +415,15 @@ export {
  * Every path carries `pathLength="100"`, which normalises its length, so the
  * draw-on animation is a plain CSS keyframe (`stroke-dashoffset: 100 -> 0`)
  * and no JavaScript has to measure anything.
+ *
+ * @author Christoph Massmann <cm@vianetz.com>
+ * @license https://opensource.org/licenses/MIT MIT License
+ */
+/**!
+ * Plain Vanilla JavaScript Animated Headline Component
+ *
+ * Typewriter that backspaces: the phrase is typed out, held, then erased one
+ * character at a time before the next one is typed in its place.
  *
  * @author Christoph Massmann <cm@vianetz.com>
  * @license https://opensource.org/licenses/MIT MIT License

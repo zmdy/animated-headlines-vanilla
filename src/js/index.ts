@@ -15,6 +15,7 @@ import './clip-caret';
 import './highlight';
 import './loading-bar';
 import './type';
+import './type-delete';
 
 export enum AnimationType {
     Blur = 'blur',
@@ -31,6 +32,7 @@ export enum AnimationType {
     Scale = 'scale',
     Slide = 'slide',
     Type = 'type',
+    TypeDelete = 'type-delete',
     Wave = 'wave',
     Zoom = 'zoom'
 }
@@ -68,6 +70,9 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
             break;
         case AnimationType.Type:
             element = document.createElement('via-animated-type-headline');
+            break;
+        case AnimationType.TypeDelete:
+            element = document.createElement('via-animated-type-delete-headline');
             break;
         default:
             throw new Error('invalid animation type ' + animationType + ' (must be one of ' + Object.values(AnimationType) + ')');

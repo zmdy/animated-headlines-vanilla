@@ -1,0 +1,25 @@
+// Layered on top of the type styles, so it only describes what differs: the
+// caret holds a steady blink while waiting rather than pulsing away to
+// nothing, which is what a typist's cursor actually does between words.
+
+@mixin styles() {
+    --ah-caret-blink-duration: 1s;
+
+    @media (prefers-reduced-motion: no-preference) {
+        &.waiting::after {
+            animation: ah-type-caret-blink var(--ah-caret-blink-duration) steps(1, end) infinite;
+        }
+    }
+
+    @keyframes ah-type-caret-blink {
+        0%,
+        50% {
+            opacity: 1;
+        }
+
+        50.01%,
+        100% {
+            opacity: 0;
+        }
+    }
+}

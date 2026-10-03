@@ -44,8 +44,9 @@ The Animated Headlines component provides multiple attributes to customize diffe
 
 | Option      | Description                                                                                                                                                                        |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `highlight` |
+| `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `type-delete`, `highlight` |
 | `shape`     | Only for `animation="highlight"`: which marker to draw (see below). Defaults to `underline`                                                                                        |
+| `erase`     | Only for `animation="type-delete"`: milliseconds between backspaces. Defaults to 60% of `delay`                                   |
 | `hold`      | Milliseconds to wait before starting a new animation cycle                                                                                                                         |
 | `delay`     | Milliseconds to delay the effect, e.g. typing or rotating                                                                                                                          |
 

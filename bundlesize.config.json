@@ -2,11 +2,11 @@
   "files": [
     {
       "path": "./dist/animated-headline.css",
-      "maxSize": "4.2 kB"
+      "maxSize": "5 kB"
     },
     {
       "path": "./dist/animated-headline.js",
-      "maxSize": "4.5 kB"
+      "maxSize": "5.2 kB"
     }
   ]
 }

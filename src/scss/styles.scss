@@ -15,7 +15,8 @@ via-animated-loading-headline,
 via-animated-clip-headline,
 via-animated-clip-caret-headline,
 via-animated-highlight-headline,
-via-animated-type-headline {
+via-animated-type-headline,
+via-animated-type-delete-headline {
     @include core.styles;
 
     &[animation="rotate-1"] {
@@ -63,8 +64,13 @@ via-animated-type-headline {
     }
 }
 
-via-animated-type-headline {
+via-animated-type-headline,
+via-animated-type-delete-headline {
     @include types.type-styles;
+}
+
+via-animated-type-delete-headline {
+    @include types.type-delete-styles;
 }
 
 via-animated-loading-headline {
