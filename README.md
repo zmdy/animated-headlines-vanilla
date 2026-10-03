@@ -19,8 +19,8 @@ npm install @vianetz/animated-headlines-vanilla
 Include the CSS and JavaScript in your head:
 
 ```html
-<link rel="stylesheet" src="dist/animated-headline.css">
-<script src="dist/animated-headline.js" defer></script>
+<link rel="stylesheet" href="dist/animated-headline.css">
+<script src="dist/animated-headline.js" type="module"></script>
 ```
 
 Then use the following markup:
@@ -32,7 +32,7 @@ Then use the following markup:
         <b>pizza</b>
         <b hidden>sushi</b>
         <b hidden>steak</b>
-    </span>
+    </via-animated-headline>
 </h1>
 ```
 
@@ -45,7 +45,9 @@ The Animated Headlines component provides multiple attributes to customize diffe
 | Option      | Description                                                                                                                                                                        |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `type-delete`, `highlight`, `sparkle`, `marker-caret`, `rise`, `pop`, `roll`, `rolling`, `shuffle`, `mirror`, `flipboard`, `swap` |
-| `shape`     | Only for `animation="highlight"`: which marker to draw (see below). Defaults to `underline`                                                                                        |
+| `shape`     | Only for `animation="highlight"` and `"marker-caret"`: which marker to draw (see below). Defaults to `underline` (`marker` for marker-caret)                                      |
+| `selection` | Only for `animation="type"`: milliseconds the phrase stays selected before it is replaced. Defaults to 500                                                                         |
+| `sparkles`  | Only for `animation="sparkle"`: how many twinkles surround a phrase. Defaults to 7                                                                                                 |
 | `erase`     | Only for `animation="type-delete"`: milliseconds between backspaces. Defaults to 60% of `delay`                                   |
 | `steps`, `tick`, `charset` | Only for `animation="shuffle"`: how many random glyphs a letter cycles through (default 7), milliseconds per glyph (default 45), and the glyphs to draw from |
 | `hold`      | Milliseconds to wait before starting a new animation cycle                                                                                                                         |
@@ -91,10 +93,12 @@ restyle it:
 
 See [the highlight demo](demo/highlights.html) for all of them.
 
-## Rotating letter effects
+## More rotating effects
 
-`rise`, `pop`, `roll`, `rolling`, `shuffle` and `mirror` rotate through the `<b>`
-phrases like the others. Use `delay` to set the stagger between letters.
+`rise`, `pop`, `roll`, `rolling`, `shuffle`, `flipboard`, `swap`, `mirror` and
+`sparkle` rotate through the `<b>` phrases like the others. For the per-letter
+ones, `delay` sets the stagger between letters. All of them stand still on the
+first phrase when `prefers-reduced-motion` is set (and in print).
 
 | Effect    | What it does                                                                                  | Custom properties                          |
 |-----------|-----------------------------------------------------------------------------------------------|--------------------------------------------|
@@ -106,6 +110,7 @@ phrases like the others. Use `delay` to set the stagger between letters.
 | `flipboard` | Airport split-flap board: only the characters that differ flip, stepping through the alphabet left to right. `speed` (ms per flip, default 90), `delay` (ms between tiles, default 70), `steps` (max flips per tile, default 12), `charset` | `--ah-flipboard-bg/-fg/-split/-top-shade/-width/-height/-gap` |
 | `swap`    | The phrase changes one letter at a time: only the letters that differ roll, left to right. `motion` (`roll` default, or `drum` for 3D), `speed` (ms per letter, default 420), `delay` (ms between letters, default 140; set it to `speed` or more to strictly go one at a time) | `--ah-swap-duration`, `--ah-swap-depth` |
 | `mirror`  | Two ghost copies close in from opposite sides and merge into the phrase                       | `--ah-mirror-a/b`, `--ah-mirror-spread`    |
+| `sparkle` | The phrase resolves out of a blur while twinkles burst in around it within the first half second, keep twinkling, and shrink away with the phrase. `sparkles` sets how many | `--ah-sparkle-color`, `--ah-sparkle-color-alt`, `--ah-sparkle-burst` |
 
 ## Counters
 
@@ -132,6 +137,24 @@ This web component emits the following events that you can listen to (should be 
 - `via-animated-headline:started`
 - `via-animated-headline:stopped`
 - `via-animated-headline:word-replaced`
+
+The counters add `via-animated-headline:tick` and (countdown, progress)
+`via-animated-headline:complete`.
+
+## Development
+
+The effects are TypeScript web components (`src/js`) and SCSS (`src/scss`),
+built with Vite into `dist/animated-headline.js` (ES module),
+`dist/animated-headline.umd.cjs` and `dist/animated-headline.css`.
+
+```bash
+npm run dev     # rebuild on change (links demo/dist to dist)
+npm run build   # clean, build for production and run the checks
+npm test        # type-check and the bundle size budgets
+```
+
+`dist/` is committed. When you change it, bump the `?v=` on the demo pages so
+the browser does not serve a cached build.
 
 ## License
 
