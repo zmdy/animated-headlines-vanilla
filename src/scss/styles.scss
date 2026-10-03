@@ -7,6 +7,7 @@
  */
 
 @use "core";
+@use "counter";
 @use "types";
 
 via-animated-words-headline,
@@ -18,7 +19,9 @@ via-animated-marker-caret-headline,
 via-animated-sparkle-headline,
 via-animated-highlight-headline,
 via-animated-type-headline,
-via-animated-type-delete-headline {
+via-animated-type-delete-headline,
+via-animated-mirror-headline,
+via-animated-stagger-headline {
     @include core.styles;
 
     &[animation="rotate-1"] {
@@ -64,6 +67,30 @@ via-animated-type-delete-headline {
     &[animation="wave"] {
         @include types.wave-styles;
     }
+
+    &[animation="mirror"] {
+        @include types.mirror-styles;
+    }
+
+    &[animation="rise"] {
+        @include types.rise-styles;
+    }
+
+    &[animation="pop"] {
+        @include types.pop-styles;
+    }
+
+    &[animation="roll"] {
+        @include types.roll-styles;
+    }
+
+    &[animation="rolling"] {
+        @include types.rolling-styles;
+    }
+
+    &[animation="shuffle"] {
+        @include types.shuffle-styles;
+    }
 }
 
 via-animated-type-headline,
@@ -100,4 +127,22 @@ via-animated-sparkle-headline {
 
 via-animated-highlight-headline {
     @include types.highlight-styles;
+}
+
+via-animated-clock,
+via-animated-countdown,
+via-animated-timecode {
+    @include counter.styles;
+}
+
+via-animated-clock {
+    @include counter.clock-styles;
+}
+
+via-animated-countdown {
+    @include counter.countdown-styles;
+}
+
+via-animated-progress {
+    @include counter.progress-styles;
 }

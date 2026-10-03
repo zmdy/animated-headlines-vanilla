@@ -1,0 +1,64 @@
+// Shuffle: a slot machine. Each letter flickers through random glyphs (the
+// component swaps the text, see stagger.ts) and lands on the real one, while
+// the letters still spinning stay dim and tinted.
+
+@mixin styles() {
+    --ah-shuffle-color: #ff4f8b;
+
+    .letter {
+        display: inline-block;
+        opacity: 0;
+        white-space: pre;
+        text-align: center;
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-shuffle-in 0.3s ease-out both;
+        }
+
+        &.is-shuffling {
+            color: var(--ah-shuffle-color);
+            opacity: 0.8;
+        }
+    }
+
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    b[hidden].is-leaving .letter[hidden] {
+        display: inline-block;
+        animation: ah-shuffle-out 0.3s ease-in both;
+    }
+
+    @keyframes ah-shuffle-in {
+        0% {
+            transform: translateY(-0.18em);
+            filter: blur(3px);
+        }
+
+        100% {
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    }
+
+    @keyframes ah-shuffle-out {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(0.18em);
+            filter: blur(3px);
+        }
+    }
+}

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.bunny.net/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./dist/animated-headline.css">
+
+    <style>
+        /* Demo-only layout. */
+        .counter { font-size: 5rem; font-weight: 700; }
+        .counter.small { font-size: 3rem; }
+        .counter.accent { color: #7c5cff; }
+        .stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 4rem; }
+        .stats p { margin-top: .4em; font-size: 1.6rem; font-weight: 400; color: #777; }
+        .stats via-animated-progress { font-size: 5rem; font-weight: 700; }
+        h1 small { font-size: 1.6rem; font-weight: 400; color: #777; }
+        .controls { margin-top: 1.5rem; }
+        .controls button { font: inherit; padding: .4em 1.2em; margin: 0 .3em; cursor: pointer; }
+    </style>
+
+    <title>Animated Headlines — Counters</title>
+</head>
+
+<body>
+    <section class="title">
+        <h1>Counters</h1>
+    </section>
+
+    <!-- Clock -->
+    <section class="intro">
+        <h2 class="animation-type">Clock</h2>
+        <h1>
+            <via-animated-counter animation="clock" class="counter"></via-animated-counter>
+        </h1>
+        <h1>
+            <via-animated-counter animation="clock" format="12h" timezone="America/New_York" class="counter small accent"></via-animated-counter>
+            <small>New York</small>
+        </h1>
+        <h1>
+            <via-animated-counter animation="clock" timezone="Asia/Tokyo" seconds="false" class="counter small"></via-animated-counter>
+            <small>Tokyo, no seconds</small>
+        </h1>
+    </section>
+
+    <!-- Countdown -->
+    <section class="intro">
+        <h2 class="animation-type">Countdown</h2>
+        <h1>
+            <via-animated-counter animation="countdown" format="labeled" data-in="3888000" class="counter small"></via-animated-counter>
+        </h1>
+        <h1>
+            <via-animated-counter animation="countdown" format="compact" data-in="93784" class="counter"></via-animated-counter>
+        </h1>
+        <h1>
+            <via-animated-counter animation="countdown" format="minimal" data-in="12" class="counter accent" id="short-countdown"></via-animated-counter>
+        </h1>
+        <p><small id="short-countdown-state">minimal: counts down 12 seconds, then freezes at zero</small></p>
+    </section>
+
+    <!-- Timecode -->
+    <section class="intro">
+        <h2 class="animation-type">Timecode</h2>
+        <h1>
+            <via-animated-timecode fps="30" start="01:59:58:00" class="counter" id="timecode"></via-animated-timecode>
+        </h1>
+        <h1>
+            <via-animated-timecode fps="24" format="compact" class="counter small accent"></via-animated-timecode>
+        </h1>
+        <div class="controls">
+            <button type="button" id="timecode-toggle">Pause</button>
+            <button type="button" id="timecode-reset">Reset</button>
+        </div>
+    </section>
+
+    <!-- Progress -->
+    <section class="intro">
+        <h2 class="animation-type">Progress</h2>
+        <div class="stats">
+            <div>
+                <via-animated-progress to="98" suffix="%" bar></via-animated-progress>
+                <p>satisfaction</p>
+            </div>
+            <div>
+                <via-animated-progress to="1200" prefix="$" duration="2400" locale="en-US"></via-animated-progress>
+                <p>saved per month</p>
+            </div>
+            <div>
+                <via-animated-progress to="4.9" suffix="★" decimals="1"></via-animated-progress>
+                <p>average rating</p>
+            </div>
+            <div>
+                <via-animated-progress from="100" to="0" suffix=" s" duration="3000" id="replay"></via-animated-progress>
+                <p>counting down works too</p>
+            </div>
+        </div>
+        <div class="controls">
+            <button type="button" id="progress-replay">Replay</button>
+        </div>
+    </section>
+
+    <script>
+        /* Countdown targets are relative to "now" so the demo never goes stale. */
+        document.querySelectorAll('[data-in]').forEach(function (el) {
+            el.setAttribute('target', String(Date.now() + parseInt(el.dataset.in, 10) * 1000));
+        });
+    </script>
+    <script src="./dist/animated-headline.js" type="module"></script>
+    <script type="module">
+        const timecode = document.getElementById('timecode');
+        const toggle = document.getElementById('timecode-toggle');
+
+        // the wrapper-less element is the live one; use it directly
+        toggle.addEventListener('click', () => {
+            const paused = timecode.toggleAttribute('paused');
+            toggle.textContent = paused ? 'Resume' : 'Pause';
+        });
+        document.getElementById('timecode-reset').addEventListener('click', () => timecode.reset());
+
+        document.getElementById('progress-replay').addEventListener('click', () => {
+            document.querySelectorAll('via-animated-progress').forEach(el => el.play());
+        });
+
+        document.getElementById('short-countdown').addEventListener('via-animated-headline:complete', () => {
+            document.getElementById('short-countdown-state').textContent = 'complete - frozen at zero';
+        });
+    </script>
+</body>
+</html>

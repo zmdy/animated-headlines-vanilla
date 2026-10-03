@@ -1,0 +1,71 @@
+// Rolling: every letter sits on the face of a small drum. The current letter
+// tips up and away over the top while the next one turns up from underneath -
+// the flap of a departure board.
+//
+// The drum's axis sits behind the letter (the negative z in `transform-origin`),
+// and each letter carries its own perspective so the effect does not depend on
+// any ancestor.
+
+@mixin styles() {
+    --ah-rolling-depth: 0.55em;
+
+    .letter {
+        display: inline-block;
+        opacity: 0;
+        white-space: pre;
+        backface-visibility: hidden;
+        transform-origin: 50% 50% calc(var(--ah-rolling-depth) * -1);
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-rolling-in 0.6s cubic-bezier(0.25, 1, 0.4, 1) both;
+        }
+    }
+
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    b[hidden].is-leaving .letter[hidden] {
+        display: inline-block;
+        opacity: 1;
+        animation: ah-rolling-out 0.5s cubic-bezier(0.6, 0, 0.8, 0.4) both;
+    }
+
+    @keyframes ah-rolling-in {
+        0% {
+            opacity: 0;
+            transform: perspective(500px) rotateX(-95deg);
+        }
+
+        30% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 1;
+            transform: perspective(500px) rotateX(0deg);
+        }
+    }
+
+    @keyframes ah-rolling-out {
+        0% {
+            opacity: 1;
+            transform: perspective(500px) rotateX(0deg);
+        }
+
+        70% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+            transform: perspective(500px) rotateX(95deg);
+        }
+    }
+}

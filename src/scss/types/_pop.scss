@@ -1,0 +1,120 @@
+// Pop: every letter slams in past its size and settles back, and a comic
+// starburst flashes behind it for a single frame of impact.
+//
+// The burst is a pseudo-element, clipped to a star drawn by the function
+// below; its colour is `--ah-pop-burst`. Blank letters get none.
+
+@use "sass:list";
+@use "sass:math";
+
+@function star($spikes, $inner) {
+    $points: ();
+
+    @for $i from 0 through ($spikes * 2 - 1) {
+        $angle: math.div(math.$pi * $i, $spikes) - math.div(math.$pi, 2);
+        $radius: 50% * $inner;
+
+        @if $i % 2 == 0 {
+            $radius: 50%;
+        }
+
+        $points: list.append($points, (50% + $radius * math.cos($angle)) (50% + $radius * math.sin($angle)), comma);
+    }
+
+    @return polygon($points);
+}
+
+@mixin styles() {
+    --ah-pop-burst: #ffcb2e;
+
+    .letter {
+        display: inline-block;
+        position: relative;
+        isolation: isolate; // keeps the burst behind its own letter, not behind the page
+        opacity: 0;
+        white-space: pre;
+
+        &:not([hidden]) {
+            opacity: 1;
+            animation: ah-pop-in 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+
+            &:not(.space)::before {
+                content: "";
+                position: absolute;
+                z-index: -1;
+                left: 50%;
+                top: 50%;
+                width: 1.9em;
+                height: 1.9em;
+                margin: -0.95em 0 0 -0.95em;
+                background: var(--ah-pop-burst);
+                clip-path: star(9, 0.55);
+                pointer-events: none;
+                animation: ah-pop-burst 0.42s ease-out both;
+            }
+        }
+    }
+
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    b[hidden].is-leaving .letter[hidden] {
+        display: inline-block;
+        animation: ah-pop-out 0.3s ease-in both;
+    }
+
+    @keyframes ah-pop-in {
+        0% {
+            opacity: 0;
+            transform: scale(0) rotate(-14deg);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.55) rotate(5deg);
+        }
+
+        75% {
+            transform: scale(0.92) rotate(-2deg);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+    }
+
+    @keyframes ah-pop-burst {
+        0% {
+            opacity: 1;
+            transform: scale(0.25) rotate(0deg);
+        }
+
+        60% {
+            opacity: 0.9;
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(1.2) rotate(18deg);
+        }
+    }
+
+    @keyframes ah-pop-out {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(0) rotate(12deg);
+        }
+    }
+}

@@ -44,9 +44,10 @@ The Animated Headlines component provides multiple attributes to customize diffe
 
 | Option      | Description                                                                                                                                                                        |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `type-delete`, `highlight` |
+| `animation` | The animation effect, one of: `rotate-1`, `rotate-2`, `rotate-3`, `type`, `loading-bar`, `slide`, `clip`, `zoom`, `scale`, `push`, `blur`, `bounce`, `glitch`, `wave`, `clip-caret`, `type-delete`, `highlight`, `sparkle`, `marker-caret`, `rise`, `pop`, `roll`, `rolling`, `shuffle`, `mirror` |
 | `shape`     | Only for `animation="highlight"`: which marker to draw (see below). Defaults to `underline`                                                                                        |
 | `erase`     | Only for `animation="type-delete"`: milliseconds between backspaces. Defaults to 60% of `delay`                                   |
+| `steps`, `tick`, `charset` | Only for `animation="shuffle"`: how many random glyphs a letter cycles through (default 7), milliseconds per glyph (default 45), and the glyphs to draw from |
 | `hold`      | Milliseconds to wait before starting a new animation cycle                                                                                                                         |
 | `delay`     | Milliseconds to delay the effect, e.g. typing or rotating                                                                                                                          |
 
@@ -89,6 +90,37 @@ restyle it:
 | `--ah-highlight-bleed-x/y` | `0.35em` / `0.3em` | How far the drawing overshoots the word |
 
 See [the highlight demo](demo/highlights.html) for all of them.
+
+## Rotating letter effects
+
+`rise`, `pop`, `roll`, `rolling`, `shuffle` and `mirror` rotate through the `<b>`
+phrases like the others. Use `delay` to set the stagger between letters.
+
+| Effect    | What it does                                                                                  | Custom properties                          |
+|-----------|-----------------------------------------------------------------------------------------------|--------------------------------------------|
+| `rise`    | Each letter climbs into place from below its baseline; the old phrase lifts away              | `--ah-rise-distance`                       |
+| `pop`     | Letters slam in past their size and settle, with a comic starburst behind each                | `--ah-pop-burst`                           |
+| `roll`    | Letters roll through a masked line-height window: old one out the top, new one in from below  |                                            |
+| `rolling` | Letters tip over a 3D drum like a departure-board flap                                        | `--ah-rolling-depth`                       |
+| `shuffle` | Slot machine: each letter flickers through random glyphs before landing on the real one       | `--ah-shuffle-color`                       |
+| `mirror`  | Two ghost copies close in from opposite sides and merge into the phrase                       | `--ah-mirror-a/b`, `--ah-mirror-spread`    |
+
+## Counters
+
+A second family of elements shows numbers and time. Pick one with
+`<via-animated-counter animation="...">`, or use the element directly (the
+direct element is the one to use if you change attributes while it runs).
+In `clock`, `countdown` and `timecode` only the digits that changed roll.
+
+| Element                    | Attributes                                                                                                                                  |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `<via-animated-clock>`     | `timezone` (IANA name, default local), `format` (`24h` / `12h`), `seconds="false"` to hide seconds, `blink="false"` to keep the colons steady |
+| `<via-animated-countdown>` | `target` (any date string or epoch ms), `format` (`compact` `DD:HH:MM:SS`, `labeled` `12d 03h 45m 12s`, `minimal` drops zero days). Freezes at zero, sets `complete`, fires `complete` |
+| `<via-animated-timecode>`  | `fps` (default 30), `start` (`HH:MM:SS:FF`), `format` (`full` / `compact`), `paused`. `reset()` restarts. Frame digits flip instead of rolling |
+| `<via-animated-progress>`  | `to`, `from`, `duration` (ms, default 1800), `decimals`, `prefix`, `suffix`, `locale`, `bar` (draws a bar), `trigger` (`view` default, `load`, `manual`). `play()` replays. Cubic ease-out, no overshoot |
+
+Counters fire `via-animated-headline:ready`, `:tick` and, for countdown and
+progress, `:complete`. See [the counters demo](demo/counters.html).
 
 ## Events
 

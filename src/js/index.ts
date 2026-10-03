@@ -18,6 +18,12 @@ import './sparkle';
 import './loading-bar';
 import './type';
 import './type-delete';
+import './stagger';
+import './mirror';
+import './clock';
+import './countdown';
+import './timecode';
+import './progress';
 
 export enum AnimationType {
     Blur = 'blur',
@@ -28,11 +34,17 @@ export enum AnimationType {
     Highlight = 'highlight',
     LoadingBar = 'loading-bar',
     MarkerCaret = 'marker-caret',
+    Mirror = 'mirror',
+    Pop = 'pop',
     Push = 'push',
+    Rise = 'rise',
+    Roll = 'roll',
+    Rolling = 'rolling',
     Rotate1 = 'rotate-1',
     Rotate2 = 'rotate-2',
     Rotate3 = 'rotate-3',
     Scale = 'scale',
+    Shuffle = 'shuffle',
     Slide = 'slide',
     Sparkle = 'sparkle',
     Type = 'type',
@@ -62,6 +74,16 @@ function createAnimatedHeadline(animationType: AnimationType, attributes: NamedN
             break;
         case AnimationType.Sparkle:
             element = document.createElement('via-animated-sparkle-headline');
+            break;
+        case AnimationType.Mirror:
+            element = document.createElement('via-animated-mirror-headline');
+            break;
+        case AnimationType.Rise:
+        case AnimationType.Pop:
+        case AnimationType.Roll:
+        case AnimationType.Rolling:
+        case AnimationType.Shuffle:
+            element = document.createElement('via-animated-stagger-headline');
             break;
         case AnimationType.Push:
         case AnimationType.Slide:
@@ -129,3 +151,44 @@ class AnimatedHeadline extends HTMLElement {
     }
 }
 customElements.define('via-animated-headline', AnimatedHeadline);
+
+export enum CounterType {
+    Clock = 'clock',
+    Countdown = 'countdown',
+    Progress = 'progress',
+    Timecode = 'timecode'
+}
+
+/**
+ * Same idea as <via-animated-headline>, for the counter family: pick the effect with the
+ * `animation` attribute (clock, countdown, timecode, progress) and every other attribute is
+ * handed on to the matching element. To change an attribute while it runs, set it on the
+ * concrete element (e.g. <via-animated-countdown>) instead.
+ */
+class AnimatedCounter extends HTMLElement {
+    static get observedAttributes() {
+        return ['animation'];
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+    attributeChangedCallback() {
+        this.render();
+    }
+
+    render() {
+        const type = this.getAttribute('animation') as CounterType;
+        if (! Object.values(CounterType).includes(type)) {
+            throw new Error('invalid counter type ' + type + ' (must be one of ' + Object.values(CounterType) + ')');
+        }
+
+        const element = document.createElement('via-animated-' + type);
+        Array.from(this.attributes).forEach(attr => element.setAttribute(attr.name, attr.value));
+
+        this.innerHTML = '';
+        this.appendChild(element);
+    }
+}
+customElements.define('via-animated-counter', AnimatedCounter);

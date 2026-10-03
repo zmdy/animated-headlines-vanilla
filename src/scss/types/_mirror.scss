@@ -1,0 +1,133 @@
+// Mirror: the phrase is flanked by two ghost copies, one in from each side,
+// that close in on it and merge. Mirror-symmetric, so it reads as a reflection
+// snapping shut. The ghosts read the phrase from `data-text` (see mirror.ts).
+
+@mixin styles() {
+    --ah-mirror-a: #ff3d81;
+    --ah-mirror-b: #29c5ff;
+    --ah-mirror-spread: 0.7em;
+
+    b::before,
+    b::after {
+        content: attr(data-text);
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    b::before {
+        color: var(--ah-mirror-a);
+    }
+
+    b::after {
+        color: var(--ah-mirror-b);
+    }
+
+    b:not([hidden]) {
+        animation: ah-mirror-in 0.7s ease-out both;
+
+        &::before {
+            animation: ah-mirror-ghost-left 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        &::after {
+            animation: ah-mirror-ghost-right 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.07s both;
+        }
+    }
+
+    // The leaving phrase stays painted so it can open back out.
+    b[hidden].is-leaving {
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: ah-mirror-out 0.5s ease-in both;
+
+        &::before {
+            animation: ah-mirror-ghost-left-out 0.5s ease-in both;
+        }
+
+        &::after {
+            animation: ah-mirror-ghost-right-out 0.5s ease-in both;
+        }
+    }
+
+    @keyframes ah-mirror-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes ah-mirror-out {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    @keyframes ah-mirror-ghost-left {
+        0% {
+            opacity: 0.8;
+            transform: translateX(calc(var(--ah-mirror-spread) * -1));
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes ah-mirror-ghost-right {
+        0% {
+            opacity: 0.8;
+            transform: translateX(var(--ah-mirror-spread));
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes ah-mirror-ghost-left-out {
+        0% {
+            opacity: 0;
+            transform: translateX(0);
+        }
+
+        30% {
+            opacity: 0.7;
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(calc(var(--ah-mirror-spread) * -1));
+        }
+    }
+
+    @keyframes ah-mirror-ghost-right-out {
+        0% {
+            opacity: 0;
+            transform: translateX(0);
+        }
+
+        30% {
+            opacity: 0.7;
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(var(--ah-mirror-spread));
+        }
+    }
+}

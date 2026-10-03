@@ -1,0 +1,193 @@
+// The counter family (clock, countdown, timecode, progress).
+//
+// Clock, countdown and timecode share one structure, built by counter.ts:
+// one slot per character, and inside a slot the glyph (`.ah-face`). A slot
+// that changes holds the old face (`.is-out`) and the new one (`.is-in`) for
+// the length of one roll.
+
+@mixin styles() {
+    --ah-counter-roll: 0.38s;
+    --ah-counter-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    display: inline-flex;
+    align-items: flex-start;
+    white-space: pre;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+
+    .ah-char {
+        position: relative;
+        display: inline-block;
+        text-align: center;
+    }
+
+    // Only digits are windowed; everything else never moves, so it must not
+    // be clipped (a comma's tail, say).
+    .ah-char.is-digit {
+        overflow: hidden;
+        min-width: 1ch;
+    }
+
+    .ah-face {
+        display: block;
+
+        &.is-in {
+            animation: ah-digit-in var(--ah-counter-roll) var(--ah-counter-ease) both;
+        }
+
+        &.is-out {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            animation: ah-digit-out var(--ah-counter-roll) var(--ah-counter-ease) both;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ah-face.is-in,
+        .ah-face.is-out {
+            animation: none;
+        }
+
+        .ah-face.is-out {
+            display: none;
+        }
+    }
+
+    @keyframes ah-digit-in {
+        0% {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes ah-digit-out {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+    }
+}
+
+// The clock's separators breathe on their own beat, independent of the digits.
+@mixin clock-styles() {
+    &:not([blink="false"]) .ah-char.is-sep {
+        animation: ah-clock-colon 2s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ah-char.is-sep {
+            animation: none;
+        }
+    }
+
+    @keyframes ah-clock-colon {
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+    }
+}
+
+// A finished countdown settles: a short pulse, then it stays put.
+@mixin countdown-styles() {
+    &[complete] {
+        animation: ah-countdown-done 0.8s ease-out both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &[complete] {
+            animation: none;
+        }
+    }
+
+    @keyframes ah-countdown-done {
+        0% {
+            transform: scale(1);
+        }
+
+        30% {
+            transform: scale(1.12);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+}
+
+// Progress: a number that counts to its target, with an optional bar below
+// that fills at the same pace (`--ah-progress`, 0..1, set by progress.ts).
+@mixin progress-styles() {
+    --ah-progress-bar-height: 0.14em;
+    --ah-progress-bar-color: currentColor;
+    --ah-progress-bar-track: rgba(128, 128, 128, 0.25);
+
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-variant-numeric: tabular-nums;
+
+    .ah-text {
+        white-space: pre;
+        text-align: center;
+    }
+
+    .ah-bar {
+        display: block;
+        height: var(--ah-progress-bar-height);
+        margin-top: 0.2em;
+        border-radius: 999px;
+        overflow: hidden;
+        background: var(--ah-progress-bar-track);
+
+        i {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--ah-progress-bar-color);
+            transform-origin: left center;
+            transform: scaleX(var(--ah-progress, 0));
+        }
+    }
+
+    // Landing: the figure gives a small nudge so the stop is felt.
+    &.is-landed .ah-text {
+        animation: ah-progress-land 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &.is-landed .ah-text {
+            animation: none;
+        }
+    }
+
+    @keyframes ah-progress-land {
+        0% {
+            transform: scale(1);
+        }
+
+        40% {
+            transform: scale(1.08);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+}
