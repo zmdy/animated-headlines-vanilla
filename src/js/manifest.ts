@@ -220,3 +220,56 @@ export const COUNTER_FORMATS: Record<string, string[]> = {
 
 /** Highlight shape ids, in the order they are offered. */
 export const SHAPES: string[] = Object.keys(HIGHLIGHT_SHAPES);
+
+export interface ThemeVariableSpec {
+    /** The custom property as it is written in CSS. */
+    variable: string;
+    label: string;
+    type: 'color' | 'length' | 'duration' | 'easing' | 'number';
+    default: string;
+    description?: string;
+    /** Values the stylesheet itself overrides for a particular shape or animation. */
+    overrides?: Record<string, string>;
+}
+
+/**
+ * The themable surface, grouped by the feature it belongs to.
+ *
+ * These are plain CSS custom properties, so they are set on the element (or
+ * any ancestor) rather than passed as attributes - which is why they are not
+ * part of OPTIONS. An integration exposing colour and timing controls reads
+ * them from here.
+ */
+export const THEME: Record<string, ThemeVariableSpec[]> = {
+    highlight: [
+        {
+            variable: '--ah-highlight-color', label: 'Ink colour', type: 'color', default: '#e63946',
+            overrides: { marker: '#ffd166' },
+        },
+        {
+            variable: '--ah-highlight-width', label: 'Pen width', type: 'length', default: '7px',
+            description: 'Kept even as the drawing is stretched to the phrase.',
+            overrides: { marker: '42px' },
+        },
+        {
+            variable: '--ah-draw-duration', label: 'Draw duration', type: 'duration', default: '1.1s',
+            overrides: { 'corner-ticks': '0.75s' },
+        },
+        {
+            variable: '--ah-draw-hold', label: 'Hold', type: 'duration', default: '1.9s',
+            description: 'How long a looping drawing stays before it dissolves.',
+        },
+        {
+            variable: '--ah-draw-ease', label: 'Draw easing', type: 'easing', default: 'linear',
+            description: 'A pen travels at a steady speed; the softness belongs in the dissolve.',
+        },
+        {
+            variable: '--ah-sweep-ease', label: 'Sweep easing', type: 'easing',
+            default: 'cubic-bezier(0.455, 0.03, 0.515, 0.955)',
+            description: 'For the parts that scale rather than draw, such as the marker.',
+        },
+        { variable: '--ah-fade-blur', label: 'Fade blur', type: 'length', default: '3px' },
+        { variable: '--ah-highlight-bleed-x', label: 'Horizontal overshoot', type: 'length', default: '0.35em' },
+        { variable: '--ah-highlight-bleed-y', label: 'Vertical overshoot', type: 'length', default: '0.3em' },
+    ],
+};

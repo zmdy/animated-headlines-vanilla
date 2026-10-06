@@ -6,7 +6,7 @@
  * on their side rather than ours. It must also stay free of DOM imports -
  * importing it here, in Node, is itself the check for that.
  */
-import {ANIMATIONS, COUNTERS, OPTIONS, SHAPES, COUNTER_FORMATS} from './dist/manifest.js';
+import {ANIMATIONS, COUNTERS, OPTIONS, SHAPES, COUNTER_FORMATS, THEME} from './dist/manifest.js';
 import {ANIMATION_ELEMENTS, COUNTER_ELEMENTS} from './dist/manifest.js';
 
 const problems = [];
@@ -45,9 +45,21 @@ if (OPTIONS.shape && OPTIONS.shape.values.join() !== SHAPES.join()) {
     problems.push('the "shape" option and SHAPES list different shapes');
 }
 
+for (const [feature, variables] of Object.entries(THEME)) {
+    for (const spec of variables) {
+        if (!spec.variable.startsWith('--ah-')) problems.push(`${feature}: "${spec.variable}" is not an --ah- property`);
+        if (!spec.default) problems.push(`${feature}: "${spec.variable}" has no default`);
+        for (const target of Object.keys(spec.overrides ?? {})) {
+            const known = SHAPES.includes(target) || ANIMATIONS.some((a) => a.id === target);
+            if (!known) problems.push(`${feature}: "${spec.variable}" overrides unknown "${target}"`);
+        }
+    }
+}
+
 if (problems.length) {
     console.error('manifest is inconsistent:\n  ' + problems.join('\n  '));
     process.exit(1);
 }
 
-console.log(`manifest ok: ${ANIMATIONS.length} animations, ${COUNTERS.length} counters, ${SHAPES.length} shapes, ${Object.keys(OPTIONS).length} options`);
+const themed = Object.values(THEME).reduce((n, list) => n + list.length, 0);
+console.log(`manifest ok: ${ANIMATIONS.length} animations, ${COUNTERS.length} counters, ${SHAPES.length} shapes, ${Object.keys(OPTIONS).length} options, ${themed} theme variables`);
