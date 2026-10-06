@@ -38,17 +38,27 @@ const bundleFinish = {
     },
 };
 
+const isManifest = process.env.AH_TARGET === 'manifest';
+
 export default defineConfig({
     plugins: [
         tsconfigPaths(),
         bundleFinish
     ],
     build: {
-        lib: {
-            entry: resolve(__dirname, 'src/js/index.ts'),
-            name: 'AnimatedHeadline',
-            fileName: 'animated-headline', // the proper extensions will be added
-        },
+        // The manifest is additive: it must not wipe the runtime bundle.
+        emptyOutDir: !isManifest,
+        lib: isManifest
+            ? {
+                entry: resolve(__dirname, 'src/js/manifest.ts'),
+                formats: ['es'],
+                fileName: () => 'manifest.js',
+            }
+            : {
+                entry: resolve(__dirname, 'src/js/index.ts'),
+                name: 'AnimatedHeadline',
+                fileName: 'animated-headline', // the proper extensions will be added
+            },
         rollupOptions: {
             external: [],
         },

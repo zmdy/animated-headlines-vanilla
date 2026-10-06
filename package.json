@@ -9,17 +9,18 @@
   "exports": {
     ".": {
       "import": "./dist/animated-headline.js",
-      "require": "./dist/animated-headline.umd.jcs"
+      "require": "./dist/animated-headline.umd.cjs"
     },
-    "./style.css": "./dist/animated-headline.css"
+    "./style.css": "./dist/animated-headline.css",
+    "./manifest": "./dist/manifest.js"
   },
   "scripts": {
     "clean": "rm -rf dist/* demo/dist",
     "dev": "npm run development",
     "development": "ln -sf ../dist/ demo/dist && vite build --watch",
     "prod": "npm run production",
-    "production": "vite build",
-    "test": "tsc --noEmit && bundlesize",
+    "production": "node build.mjs",
+    "test": "tsc --noEmit && node check-manifest.mjs && bundlesize",
     "build": "npm run clean && npm run prod && npm run test"
   },
   "author": "Geoff Selby",
@@ -45,5 +46,11 @@
     "vite": "^7.1.9",
     "vite-plugin-sass": "^0.1.0",
     "vite-tsconfig-paths": "^5.1.4"
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE.txt"
+  ]
 }

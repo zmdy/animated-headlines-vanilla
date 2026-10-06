@@ -26,6 +26,7 @@ import './clock';
 import './countdown';
 import './timecode';
 import './progress';
+import {ANIMATION_ELEMENTS, COUNTER_ELEMENTS} from './elements';
 
 export enum AnimationType {
     Blur = 'blur',
@@ -57,68 +58,17 @@ export enum AnimationType {
     Zoom = 'zoom'
 }
 
-function createAnimatedHeadline(animationType: AnimationType, attributes: NamedNodeMap) {
-    let element;
+/** animation id -> the concrete element it resolves to, straight from the manifest. */
+const ELEMENT_BY_ANIMATION = new Map(Object.entries(ANIMATION_ELEMENTS));
 
-    switch (animationType) {
-        case AnimationType.Clip:
-            element = document.createElement('via-animated-clip-headline');
-            break;
-        case AnimationType.ClipCaret:
-            element = document.createElement('via-animated-clip-caret-headline');
-            break;
-        case AnimationType.LoadingBar:
-            element = document.createElement('via-animated-loading-headline');
-            break;
-        case AnimationType.Highlight:
-            element = document.createElement('via-animated-highlight-headline');
-            break;
-        case AnimationType.MarkerCaret:
-            element = document.createElement('via-animated-marker-caret-headline');
-            break;
-        case AnimationType.Sparkle:
-            element = document.createElement('via-animated-sparkle-headline');
-            break;
-        case AnimationType.Swap:
-            element = document.createElement('via-animated-swap-headline');
-            break;
-        case AnimationType.Flipboard:
-            element = document.createElement('via-animated-flipboard-headline');
-            break;
-        case AnimationType.Mirror:
-            element = document.createElement('via-animated-mirror-headline');
-            break;
-        case AnimationType.Rise:
-        case AnimationType.Pop:
-        case AnimationType.Roll:
-        case AnimationType.Rolling:
-        case AnimationType.Shuffle:
-            element = document.createElement('via-animated-stagger-headline');
-            break;
-        case AnimationType.Push:
-        case AnimationType.Slide:
-        case AnimationType.Rotate1:
-        case AnimationType.Zoom:
-        case AnimationType.Blur:
-        case AnimationType.Bounce:
-        case AnimationType.Glitch:
-            element = document.createElement('via-animated-words-headline');
-            break;
-        case AnimationType.Scale:
-        case AnimationType.Rotate2:
-        case AnimationType.Rotate3:
-        case AnimationType.Wave:
-            element = document.createElement('via-animated-letters-headline');
-            break;
-        case AnimationType.Type:
-            element = document.createElement('via-animated-type-headline');
-            break;
-        case AnimationType.TypeDelete:
-            element = document.createElement('via-animated-type-delete-headline');
-            break;
-        default:
-            throw new Error('invalid animation type ' + animationType + ' (must be one of ' + Object.values(AnimationType) + ')');
+function createAnimatedHeadline(animationType: AnimationType, attributes: NamedNodeMap) {
+    const tag = ELEMENT_BY_ANIMATION.get(animationType);
+    if (tag === undefined) {
+        throw new Error('invalid animation type ' + animationType
+            + ' (must be one of ' + Array.from(ELEMENT_BY_ANIMATION.keys()) + ')');
     }
+
+    const element = document.createElement(tag);
 
     // copy attributes to child
     Array.from(attributes).forEach(attr => element.setAttribute(attr.name, attr.value));
@@ -162,6 +112,9 @@ class AnimatedHeadline extends HTMLElement {
 }
 customElements.define('via-animated-headline', AnimatedHeadline);
 
+/** counter id -> element, also from the manifest. */
+const ELEMENT_BY_COUNTER = new Map(Object.entries(COUNTER_ELEMENTS));
+
 export enum CounterType {
     Clock = 'clock',
     Countdown = 'countdown',
@@ -190,11 +143,13 @@ class AnimatedCounter extends HTMLElement {
 
     render() {
         const type = this.getAttribute('animation') as CounterType;
-        if (! Object.values(CounterType).includes(type)) {
-            throw new Error('invalid counter type ' + type + ' (must be one of ' + Object.values(CounterType) + ')');
+        const tag = ELEMENT_BY_COUNTER.get(type);
+        if (tag === undefined) {
+            throw new Error('invalid counter type ' + type
+                + ' (must be one of ' + Array.from(ELEMENT_BY_COUNTER.keys()) + ')');
         }
 
-        const element = document.createElement('via-animated-' + type);
+        const element = document.createElement(tag);
         Array.from(this.attributes).forEach(attr => element.setAttribute(attr.name, attr.value));
 
         this.innerHTML = '';
