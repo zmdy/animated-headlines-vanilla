@@ -218,6 +218,14 @@ export const COUNTER_FORMATS: Record<string, string[]> = {
     timecode: ['full', 'compact'],
 };
 
+/**
+ * The shape geometry itself, for integrations that draw the marker rather
+ * than mounting the component - a page builder decorating existing text, say.
+ * Each entry is a list of path `d` strings authored in a 0 0 500 150 viewBox
+ * and meant to be stretched to the phrase with preserveAspectRatio="none".
+ */
+export { HIGHLIGHT_SHAPES } from './shapes';
+
 /** Highlight shape ids, in the order they are offered. */
 export const SHAPES: string[] = Object.keys(HIGHLIGHT_SHAPES);
 
