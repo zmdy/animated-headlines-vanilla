@@ -15,9 +15,9 @@
     "./manifest": "./dist/manifest.js"
   },
   "scripts": {
-    "clean": "rm -rf dist/* demo/dist",
+    "clean": "rm -rf dist/*",
     "dev": "npm run development",
-    "development": "ln -sf ../dist/ demo/dist && vite build --watch",
+    "development": "vite build --watch",
     "prod": "npm run production",
     "production": "node build.mjs",
     "test": "tsc --noEmit && node check-manifest.mjs && bundlesize",
