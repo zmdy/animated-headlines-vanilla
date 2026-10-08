@@ -21,8 +21,12 @@ export default class AnimatedCountdownElement extends AnimatedCounterElement {
 
     private completed = false;
 
+    /** tick() runs every second, so the missing-date warning is said once. */
+    private warned = false;
+
     protected begin(): void {
         this.completed = false;
+        this.warned = false;
         this.removeAttribute('complete');
         this.tick();
     }
@@ -36,7 +40,10 @@ export default class AnimatedCountdownElement extends AnimatedCounterElement {
     private tick(): void {
         const target = this.target();
         if (Number.isNaN(target)) {
-            console.warn('via-animated-countdown needs a valid "target" date');
+            if (! this.warned) {
+                this.warned = true;
+                console.warn('via-animated-countdown needs a valid "target" date');
+            }
             this.display(this.format(0));
             return;
         }

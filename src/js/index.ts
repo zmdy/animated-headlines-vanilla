@@ -90,6 +90,15 @@ class AnimatedHeadline extends HTMLElement {
     }
 
     attributeChangedCallback() {
+        // Attributes are usually set on a detached element, one at a time, and
+        // each of those rendered a child from a half-built set - the stale one
+        // then warned about everything it was still missing the moment the
+        // element was inserted. connectedCallback renders on insertion anyway,
+        // so there is nothing to do until then.
+        if (! this.isConnected) {
+            return;
+        }
+
         this.render();
     }
 
@@ -138,6 +147,15 @@ class AnimatedCounter extends HTMLElement {
     }
 
     attributeChangedCallback() {
+        // Attributes are usually set on a detached element, one at a time, and
+        // each of those rendered a child from a half-built set - the stale one
+        // then warned about everything it was still missing the moment the
+        // element was inserted. connectedCallback renders on insertion anyway,
+        // so there is nothing to do until then.
+        if (! this.isConnected) {
+            return;
+        }
+
         this.render();
     }
 
