@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="../dist/animated-headline.css?v=20261010">
+    <link rel="stylesheet" href="../dist/animated-headline.css?v=20261011">
 
     <style>
         /* Demo-only layout. */
@@ -18,6 +18,10 @@
         .stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 4rem; }
         .stats p { margin-top: .4em; font-size: 1.6rem; font-weight: 400; color: #777; }
         .stats via-animated-progress { font-size: 5rem; font-weight: 700; }
+        .stats via-animated-progress.small { font-size: 3rem; }
+        .stats via-animated-progress.accent { color: #7c5cff; }
+        .note { max-width: 46rem; margin: 0 auto 2rem; color: #777; }
+        .note code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
         h1 small { font-size: 1.6rem; font-weight: 400; color: #777; }
         .controls { margin-top: 1.5rem; }
         .controls button { font: inherit; padding: .4em 1.2em; margin: 0 .3em; cursor: pointer; }
@@ -60,6 +64,11 @@
             <via-animated-counter animation="countdown" format="minimal" data-in="12" class="counter accent" id="short-countdown"></via-animated-counter>
         </h1>
         <p><small id="short-countdown-state">minimal: counts down 12 seconds, then freezes at zero</small></p>
+        <h1>
+            <via-animated-counter animation="countdown" format="minimal" direction="up" data-in="3600" class="counter small"></via-animated-counter>
+            <small>direction="up": the old roll, for comparison</small>
+        </h1>
+        <p><small>A countdown rolls its digits downwards: the new figure drops in from above while the old one leaves through the floor.</small></p>
     </section>
 
     <!-- Timecode -->
@@ -98,6 +107,37 @@
                 <p>counting down works too</p>
             </div>
         </div>
+
+        <h2 class="animation-type">Progress, rolling</h2>
+        <p class="note"><small>With <code>roll</code> the figure is a row of slots like the clock's, and only the digits that
+            actually changed flip. They travel the way the number is going: upwards as it grows, downwards as it falls.</small></p>
+        <div class="stats">
+            <div>
+                <via-animated-progress to="1250" suffix="+" duration="2600" roll></via-animated-progress>
+                <p>projects shipped</p>
+            </div>
+            <div>
+                <via-animated-progress to="99.9" suffix="%" decimals="1" duration="2600" roll bar class="accent"></via-animated-progress>
+                <p>uptime, with a bar</p>
+            </div>
+            <div>
+                <via-animated-progress from="250" to="0" prefix="$" duration="3200" roll></via-animated-progress>
+                <p>down to zero, rolling down</p>
+            </div>
+            <div>
+                <via-animated-progress from="250" to="0" prefix="$" duration="3200" roll direction="up"></via-animated-progress>
+                <p>the same, forced to roll up</p>
+            </div>
+            <div>
+                <via-animated-progress to="86400" duration="3000" locale="de-DE" roll class="small"></via-animated-progress>
+                <p>de-DE grouping</p>
+            </div>
+            <div>
+                <via-animated-progress to="7" suffix=" / 10" duration="1600" roll class="small accent"></via-animated-progress>
+                <p>a single digit</p>
+            </div>
+        </div>
+
         <div class="controls">
             <button type="button" id="progress-replay">Replay</button>
         </div>
@@ -109,7 +149,7 @@
             el.setAttribute('target', String(Date.now() + parseInt(el.dataset.in, 10) * 1000));
         });
     </script>
-    <script src="../dist/animated-headline.js?v=20261010" type="module"></script>
+    <script src="../dist/animated-headline.js?v=20261011" type="module"></script>
     <script type="module">
         const timecode = document.getElementById('timecode');
         const toggle = document.getElementById('timecode-toggle');

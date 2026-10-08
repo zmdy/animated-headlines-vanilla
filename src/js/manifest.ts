@@ -48,6 +48,8 @@ export interface CounterSpec {
     label: string;
     element: string;
     options: string[];
+    /** Options whose default differs for this counter. */
+    defaults?: Record<string, string | number | boolean>;
 }
 
 /**
@@ -135,6 +137,14 @@ export const OPTIONS: Record<string, OptionSpec> = {
         type: 'enum', label: 'Starts', default: 'view', values: ['view', 'load'],
         description: 'The "view" setting waits until the counter is scrolled into sight.',
     },
+    roll: {
+        type: 'boolean', label: 'Roll the digits', default: false,
+        description: 'Each digit flips to the next the way a clock\'s does, instead of the figure being redrawn.',
+    },
+    direction: {
+        type: 'enum', label: 'Roll direction', default: '', values: ['', 'up', 'down'],
+        description: 'Which way a digit travels as it changes. Empty follows the value: up as it grows, down as it falls.',
+    },
 };
 
 export const ANIMATIONS: AnimationSpec[] = [
@@ -202,19 +212,24 @@ export const ANIMATIONS: AnimationSpec[] = [
 ];
 
 export const COUNTERS: CounterSpec[] = [
-    { id: 'clock', label: 'Clock', element: COUNTER_ELEMENTS['clock'], options: ['format', 'timezone'] },
-    { id: 'countdown', label: 'Countdown', element: COUNTER_ELEMENTS['countdown'], options: ['target', 'format'] },
-    { id: 'timecode', label: 'Timecode', element: COUNTER_ELEMENTS['timecode'], options: ['start', 'fps', 'format', 'paused'] },
+    { id: 'clock', label: 'Clock', element: COUNTER_ELEMENTS['clock'], options: ['format', 'timezone', 'direction'] },
+    {
+        id: 'countdown', label: 'Countdown', element: COUNTER_ELEMENTS['countdown'],
+        options: ['target', 'format', 'direction'],
+        // Figures falling towards zero roll downwards unless told otherwise.
+        defaults: {direction: 'down'},
+    },
+    { id: 'timecode', label: 'Timecode', element: COUNTER_ELEMENTS['timecode'], options: ['start', 'fps', 'format', 'paused', 'direction'] },
     {
         id: 'progress', label: 'Counter', element: COUNTER_ELEMENTS['progress'],
-        options: ['from', 'to', 'duration', 'decimals', 'prefix', 'suffix', 'locale', 'bar', 'trigger'],
+        options: ['from', 'to', 'duration', 'decimals', 'prefix', 'suffix', 'locale', 'bar', 'trigger', 'roll', 'direction'],
     },
 ];
 
 /** The `format` choices differ per counter, so they live here rather than on the option. */
 export const COUNTER_FORMATS: Record<string, string[]> = {
     clock: ['24h', '12h'],
-    countdown: ['full', 'compact'],
+    countdown: ['compact', 'labeled', 'minimal'],
     timecode: ['full', 'compact'],
 };
 

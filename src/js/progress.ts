@@ -13,19 +13,33 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-import {emit, numberAttribute, prefersReducedMotion} from './utilities';
+import {RollingText} from './rolling-text';
+import {emit, flagAttribute, numberAttribute, prefersReducedMotion} from './utilities';
 
 const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
 
+/**
+ * How often the rolling figure is allowed to change, in milliseconds.
+ *
+ * Counting repaints every frame, which is far too fast for a roll to be seen
+ * as motion - the digits would only blur. At this cadence each change is a
+ * legible flip, and the figure still lands exactly on its target because the
+ * final paint is not throttled.
+ */
+const ROLL_CADENCE = 80;
+
 export default class AnimatedProgressElement extends HTMLElement {
     static get observedAttributes() {
-        return ['from', 'to', 'decimals', 'prefix', 'suffix', 'locale', 'bar'];
+        return ['from', 'to', 'decimals', 'prefix', 'suffix', 'locale', 'bar', 'roll'];
     }
 
     private value = 0;
     private frame: number | undefined;
     private observer: IntersectionObserver | undefined;
     private played = false;
+
+    private digits: RollingText | undefined;
+    private painted = 0;
 
     private valueElement!: HTMLElement;
     private prefixElement!: HTMLElement;
@@ -101,6 +115,17 @@ export default class AnimatedProgressElement extends HTMLElement {
             this.appendChild(text);
         }
 
+        // `roll` is read here rather than at every paint, so turning it on or
+        // off swaps the figure once instead of each frame.
+        const rolling = flagAttribute(this, 'roll', false);
+        if (rolling && this.digits === undefined) {
+            this.digits = new RollingText(this.valueElement);
+            this.valueElement.textContent = '';
+        } else if (! rolling && this.digits !== undefined) {
+            this.digits = undefined;
+            this.valueElement.textContent = '';
+        }
+
         if (hasBar && this.barElement === null) {
             this.barElement = document.createElement('span');
             this.barElement.className = 'ah-bar';
@@ -117,6 +142,12 @@ export default class AnimatedProgressElement extends HTMLElement {
         cancelAnimationFrame(this.frame!);
         this.classList.remove('is-landed');
 
+        // A figure on its way down rolls down, unless the author chose.
+        if (! this.hasAttribute('direction')) {
+            this.style.setProperty('--ah-roll-in', to < from ? 'ah-digit-in-down' : 'ah-digit-in');
+            this.style.setProperty('--ah-roll-out', to < from ? 'ah-digit-out-down' : 'ah-digit-out');
+        }
+
         const duration = Math.max(0, numberAttribute(this, 'duration', 1800));
 
         if (prefersReducedMotion() || duration === 0 || from === to) {
@@ -124,9 +155,14 @@ export default class AnimatedProgressElement extends HTMLElement {
         }
 
         const start = performance.now();
+        this.painted = 0;
         const step = (now: number) => {
             const progress = Math.min(1, (now - start) / duration);
-            this.paint(from + (to - from) * easeOutCubic(progress));
+
+            if (! this.digits || now - this.painted >= ROLL_CADENCE) {
+                this.painted = now;
+                this.paint(from + (to - from) * easeOutCubic(progress));
+            }
 
             if (progress < 1) {
                 this.frame = requestAnimationFrame(step);
@@ -149,7 +185,11 @@ export default class AnimatedProgressElement extends HTMLElement {
 
         const decimals = Math.max(0, Math.round(numberAttribute(this, 'decimals', 0)));
         this.prefixElement.textContent = this.getAttribute('prefix') ?? '';
-        this.valueElement.textContent = this.format(value, decimals);
+        if (this.digits) {
+            this.digits.write(this.format(value, decimals));
+        } else {
+            this.valueElement.textContent = this.format(value, decimals);
+        }
         this.suffixElement.textContent = this.getAttribute('suffix') ?? '';
 
         // The final figure is what assistive technology should hear, not

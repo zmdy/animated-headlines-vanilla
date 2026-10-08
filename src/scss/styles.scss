@@ -150,3 +150,6 @@ via-animated-countdown {
 via-animated-progress {
     @include counter.progress-styles;
 }
+
+// The glyph travel, shared by every counter that rolls, emitted once.
+@include counter.keyframes;

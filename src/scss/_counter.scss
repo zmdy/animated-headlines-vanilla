@@ -3,18 +3,13 @@
 // Clock, countdown and timecode share one structure, built by counter.ts:
 // one slot per character, and inside a slot the glyph (`.ah-face`). A slot
 // that changes holds the old face (`.is-out`) and the new one (`.is-in`) for
-// the length of one roll.
+// the length of one roll. The progress counter builds the same slots, but
+// only for the figure between its prefix and suffix, so the rules below are
+// split: `slot-rules` goes wherever the slots are, and `keyframes` is emitted
+// once for the whole stylesheet.
 
-@mixin styles() {
-    --ah-counter-roll: 0.38s;
-    --ah-counter-ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-    display: inline-flex;
-    align-items: flex-start;
-    white-space: pre;
-    line-height: 1.15;
-    font-variant-numeric: tabular-nums;
-
+// What a rolling slot looks like. Applied to whatever element holds the slots.
+@mixin slot-rules() {
     .ah-char {
         position: relative;
         display: inline-block;
@@ -31,8 +26,11 @@
     .ah-face {
         display: block;
 
+        // Which way a glyph travels is chosen by swapping the keyframes, so a
+        // counter on its way down rolls the other way without a second rule
+        // for every state below.
         &.is-in {
-            animation: ah-digit-in var(--ah-counter-roll) var(--ah-counter-ease) both;
+            animation: var(--ah-roll-in, ah-digit-in) var(--ah-counter-roll) var(--ah-counter-ease) both;
         }
 
         &.is-out {
@@ -40,7 +38,7 @@
             left: 0;
             right: 0;
             top: 0;
-            animation: ah-digit-out var(--ah-counter-roll) var(--ah-counter-ease) both;
+            animation: var(--ah-roll-out, ah-digit-out) var(--ah-counter-roll) var(--ah-counter-ease) both;
         }
     }
 
@@ -54,7 +52,10 @@
             display: none;
         }
     }
+}
 
+// The travel of a glyph, in both directions. Emitted once.
+@mixin keyframes() {
     @keyframes ah-digit-in {
         0% {
             opacity: 0;
@@ -77,6 +78,55 @@
             opacity: 0;
             transform: translateY(-100%);
         }
+    }
+
+    @keyframes ah-digit-in-down {
+        0% {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes ah-digit-out-down {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+    }
+}
+
+// Counting down: the new glyph drops in from above and the old one leaves
+// through the floor, so the motion agrees with the number. Set on the host,
+// since custom properties reach the slots wherever they are.
+@mixin rolls-down() {
+    --ah-roll-in: ah-digit-in-down;
+    --ah-roll-out: ah-digit-out-down;
+}
+
+@mixin styles() {
+    --ah-counter-roll: 0.38s;
+    --ah-counter-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    display: inline-flex;
+    align-items: flex-start;
+    white-space: pre;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+
+    @include slot-rules;
+
+    &[direction="down"] {
+        @include rolls-down;
     }
 }
 
@@ -106,6 +156,12 @@
 
 // A finished countdown settles: a short pulse, then it stays put.
 @mixin countdown-styles() {
+    // The figures are falling towards zero, so that is the way they roll
+    // unless the author asks for the other one.
+    &:not([direction="up"]) {
+        @include rolls-down;
+    }
+
     &[complete] {
         animation: ah-countdown-done 0.8s ease-out both;
     }
@@ -134,6 +190,8 @@
 // Progress: a number that counts to its target, with an optional bar below
 // that fills at the same pace (`--ah-progress`, 0..1, set by progress.ts).
 @mixin progress-styles() {
+    --ah-counter-roll: 0.3s;
+    --ah-counter-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --ah-progress-bar-height: 0.14em;
     --ah-progress-bar-color: currentColor;
     --ah-progress-bar-track: rgba(128, 128, 128, 0.25);
@@ -146,6 +204,21 @@
     .ah-text {
         white-space: pre;
         text-align: center;
+    }
+
+    // With `roll`, the figure is a row of slots like the clock's rather than
+    // one piece of text.
+    &[roll] .ah-value {
+        display: inline-flex;
+        align-items: flex-start;
+        line-height: 1.15;
+    }
+
+    @include slot-rules;
+
+    // A figure on its way down rolls down, the same way a countdown does.
+    &[direction="down"] {
+        @include rolls-down;
     }
 
     .ah-bar {
